@@ -8,23 +8,23 @@ import { Magnetic } from './components/Magnetic';
 import { Hero } from './components/Hero';
 
 const IMAGES = {
-  hero: "https://images.unsplash.com/photo-1583122622483-34b82711685e?auto=format&fit=crop&q=80&w=2000",
-  about: "https://images.unsplash.com/photo-1620065050968-1501c606af88?auto=format&fit=crop&q=80&w=1000",
+  hero: "/images/ford.png",
+  about: "/images/chevy.png",
   services: [
-    "https://images.unsplash.com/photo-1516546453174-5e1098a4b4af?auto=format&fit=crop&q=80&w=1000",
-    "https://images.unsplash.com/photo-1605810730445-56502be15082?auto=format&fit=crop&q=80&w=1000",
-    "https://images.unsplash.com/photo-1559311648-d46f5d8593d6?auto=format&fit=crop&q=80&w=1000",
-    "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&q=80&w=1000",
-    "https://images.unsplash.com/photo-1619682817481-e994891cd1f5?auto=format&fit=crop&q=80&w=1000",
-    "https://images.unsplash.com/photo-1506015391300-415214d24a28?auto=format&fit=crop&q=80&w=1000"
+    "/images/ford.png",
+    "/images/chevy.png",
+    "/images/toyota.png",
+    "/images/jeep.png",
+    "/images/chevy.png",
+    "/images/ford.png"
   ],
   gallery: [
-    "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1619682817481-e994891cd1f5?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1506015391300-415214d24a28?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1625833538435-0259b3400511?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1566310218151-872f23246416?auto=format&fit=crop&q=80&w=800"
+    "/images/chevy.png",
+    "/images/toyota.png",
+    "/images/jeep.png",
+    "/images/ford.png",
+    "/images/toyota.png",
+    "/images/jeep.png"
   ]
 };
 

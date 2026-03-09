@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { Magnetic } from './Magnetic';
 
 const IMAGES = {
-  hero: "https://images.unsplash.com/photo-1583122622483-34b82711685e?auto=format&fit=crop&q=80&w=2000"
+  hero: "/images/ford.png"
 };
 
 export function Hero() {
