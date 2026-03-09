@@ -19,12 +19,12 @@ const IMAGES = {
     "/images/ram.png"
   ],
   gallery: [
-    "/images/chevy.png",
-    "/images/toyota.png",
-    "/images/jeep.png",
+    "/images/raptor.png",
     "/images/bronco.png",
-    "/images/colorado.png",
-    "/images/classic.png"
+    "/images/gladiator.png",
+    "/images/classic.png",
+    "/images/tundra.png",
+    "/images/utv.png"
   ]
 };
 
@@ -69,16 +69,19 @@ function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 bg-ink border-t border-gunmetal p-6 flex flex-col gap-4 md:hidden shadow-2xl"
+            initial={{ opacity: 0, clipPath: "circle(0% at 100% 0)" }}
+            animate={{ opacity: 1, clipPath: "circle(150% at 100% 0)" }}
+            exit={{ opacity: 0, clipPath: "circle(0% at 100% 0)" }}
+            transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 bg-ink/95 backdrop-blur-xl flex flex-col justify-center items-center gap-8 md:hidden"
           >
-            <a href="#services" onClick={() => setMobileMenuOpen(false)} className="font-display text-3xl uppercase tracking-wider hover:text-crimson">Services</a>
-            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="font-display text-3xl uppercase tracking-wider hover:text-crimson">About</a>
-            <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="font-display text-3xl uppercase tracking-wider hover:text-crimson">Gallery</a>
-            <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="font-display text-3xl uppercase tracking-wider hover:text-crimson">Reviews</a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="bg-crimson text-center py-4 font-display text-2xl uppercase tracking-wider mt-4">Get a Quote</a>
+            <a href="#services" onClick={() => setMobileMenuOpen(false)} className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors">Services</a>
+            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors">About</a>
+            <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors">Gallery</a>
+            <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors">Reviews</a>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="bg-crimson text-white px-12 py-5 font-display text-3xl uppercase tracking-wider mt-12 skew-x-[-10deg]">
+              <div className="skew-x-[10deg]">Get a Quote</div>
+            </a>
           </motion.div>
         )}
       </AnimatePresence>
@@ -119,20 +122,25 @@ function Services() {
               className="group relative border-b border-ink/50 py-10 md:py-16 flex flex-col md:flex-row items-start md:items-center justify-between hover:bg-crimson transition-colors duration-500 px-6 cursor-pointer overflow-hidden"
             >
               <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-4 md:gap-12 w-full md:w-auto">
-                <span className="font-display text-5xl md:text-7xl text-ink/20 group-hover:text-ink/40 transition-colors">0{idx + 1}</span>
+                <span className="font-display text-5xl sm:text-6xl md:text-7xl text-ink/20 group-hover:text-ink/40 transition-colors">0{idx + 1}</span>
                 <div>
-                  <h3 className="font-display text-4xl md:text-6xl uppercase tracking-wide mb-2 group-hover:text-ink transition-colors">{service.title}</h3>
-                  <p className="font-sans text-gray-400 group-hover:text-ink/80 max-w-lg text-lg font-medium transition-colors">{service.desc}</p>
+                  <h3 className="font-display text-4xl sm:text-5xl md:text-6xl uppercase tracking-wide mb-2 group-hover:text-ink transition-colors">{service.title}</h3>
+                  <p className="font-sans text-gray-400 group-hover:text-ink/80 max-w-lg text-base sm:text-lg font-medium transition-colors">{service.desc}</p>
                 </div>
               </div>
               
-              {/* Hover Image Reveal (Hidden on mobile) */}
-              <div className="hidden md:block absolute right-10 top-1/2 -translate-y-1/2 w-[400px] h-[250px] opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-500 pointer-events-none z-0 shadow-2xl skew-x-[-5deg]">
+              {/* Hover Image Reveal */}
+              <div className="hidden lg:block absolute right-10 top-1/2 -translate-y-1/2 w-[400px] h-[250px] opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-500 pointer-events-none z-0 shadow-2xl skew-x-[-5deg]">
                 <img src={service.image} alt={service.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute inset-0 border-4 border-ink mix-blend-overlay"></div>
               </div>
 
-              <div className="mt-6 md:mt-0 relative z-10 text-crimson group-hover:text-ink transition-colors transform group-hover:translate-x-4 duration-300">
+              {/* Mobile Image (Always visible on small screens to make it impressive) */}
+              <div className="block lg:hidden w-full h-48 mt-6 relative overflow-hidden border-2 border-ink/20 skew-x-[-2deg]">
+                 <img src={service.image} alt={service.title} className="w-full h-full object-cover grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" />
+              </div>
+
+              <div className="mt-6 md:mt-0 relative z-10 text-crimson group-hover:text-ink transition-colors transform group-hover:translate-x-4 duration-300 self-end md:self-auto">
                 <Magnetic strength={20}>
                   <div className="p-4 bg-ink/10 rounded-full backdrop-blur-sm group-hover:bg-white/20 transition-colors">
                     <ArrowRight className="w-10 h-10 md:w-16 md:h-16" />
@@ -224,7 +232,7 @@ function Gallery() {
             <h2 className="font-display text-6xl md:text-8xl uppercase tracking-tight mb-4 text-stroke-thick opacity-80">Confirmed <span className="text-crimson text-stroke-none opacity-100">Kills</span></h2>
             <p className="font-sans text-gray-400 text-xl font-medium">A showcase of our most recent builds.</p>
           </div>
-          <div className="flex gap-6 font-sans font-black text-sm uppercase tracking-widest">
+          <div className="flex flex-wrap gap-4 font-sans font-black text-xs sm:text-sm uppercase tracking-widest mt-6 md:mt-0">
             <button className="text-crimson border-b-4 border-crimson pb-2">All Builds</button>
             <button className="text-gray-500 hover:text-white transition-colors pb-2">Trucks</button>
             <button className="text-gray-500 hover:text-white transition-colors pb-2">Jeeps</button>
