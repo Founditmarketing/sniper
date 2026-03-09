@@ -29,10 +29,11 @@ export function Hero() {
         style={{ y: yBackground }}
         className="absolute inset-0 z-10 origin-top"
       >
-        <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay z-20 pointer-events-none"></div>
-        <img src={IMAGES.hero} alt="Off-road truck in dust" className="w-full h-[120%] object-cover opacity-60 mix-blend-luminosity -mt-[10%]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/60 to-transparent z-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent z-10"></div>
+        <div className="absolute inset-0 bg-ink opacity-40 z-20 pointer-events-none"></div>
+        <img src={IMAGES.hero} alt="Off-road truck in dust" className="w-full h-[120%] object-cover -mt-[10%]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/40 to-transparent z-30 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent z-30 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-noise opacity-[0.02] mix-blend-overlay z-40 pointer-events-none"></div>
       </motion.div>
       
       <div className="relative z-20 max-w-7xl mx-auto px-6 w-full pt-20">
