@@ -15,16 +15,16 @@ const IMAGES = {
     "/images/chevy.png",
     "/images/toyota.png",
     "/images/jeep.png",
-    "/images/chevy.png",
-    "/images/ford.png"
+    "/images/colorado.png",
+    "/images/ram.png"
   ],
   gallery: [
     "/images/chevy.png",
     "/images/toyota.png",
     "/images/jeep.png",
-    "/images/ford.png",
-    "/images/toyota.png",
-    "/images/jeep.png"
+    "/images/bronco.png",
+    "/images/colorado.png",
+    "/images/classic.png"
   ]
 };
 
