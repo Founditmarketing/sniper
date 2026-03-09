@@ -410,4 +410,108 @@ function Footer() {
   );
 }
 
-export { Navbar, Hero, Services, About, Gallery, Reviews, Footer };
+function CustomCursor() {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    const updateMousePosition = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName.toLowerCase() === 'a' || 
+        target.tagName.toLowerCase() === 'button' ||
+        target.closest('a') ||
+        target.closest('button')
+      ) {
+        setIsHovering(true);
+      } else {
+        setIsHovering(false);
+      }
+    };
+
+    window.addEventListener('mousemove', updateMousePosition);
+    window.addEventListener('mouseover', handleMouseOver);
+
+    return () => {
+      window.removeEventListener('mousemove', updateMousePosition);
+      window.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, []);
+
+  return (
+    <>
+      <motion.div
+        className="fixed top-0 left-0 w-4 h-4 bg-crimson rounded-full pointer-events-none z-[100] mix-blend-difference hidden md:block select-none"
+        animate={{
+          x: mousePosition.x - 8,
+          y: mousePosition.y - 8,
+          scale: isHovering ? 2.5 : 1,
+        }}
+        transition={{ type: "tween", ease: "backOut", duration: 0.15 }}
+      />
+      <motion.div
+        className="fixed top-0 left-0 w-12 h-12 border-2 border-crimson rounded-full pointer-events-none z-[99] hidden md:block select-none"
+        animate={{
+          x: mousePosition.x - 24,
+          y: mousePosition.y - 24,
+          scale: isHovering ? 1.5 : 1,
+          opacity: isHovering ? 0 : 0.6
+        }}
+        transition={{ type: "tween", ease: "easeOut", duration: 0.3 }}
+      />
+    </>
+  );
+}
+
+function Preloader({ onComplete }: { onComplete: () => void }) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress(p => {
+        if (p >= 100) {
+          clearInterval(timer);
+          setTimeout(onComplete, 800);
+          return 100;
+        }
+        return p + Math.floor(Math.random() * 15) + 5;
+      });
+    }, 100);
+    return () => clearInterval(timer);
+  }, [onComplete]);
+
+  return (
+    <motion.div 
+      initial={{ y: 0 }}
+      exit={{ y: "-100%" }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+      className="fixed inset-0 z-[200] bg-ink flex flex-col items-center justify-center overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-brushed-metal opacity-20" />
+      <div className="relative z-10 w-full max-w-sm px-6">
+        <div className="flex items-center gap-3 justify-center mb-8">
+          <Crosshair className="w-12 h-12 text-crimson animate-pulse" />
+          <span className="font-display text-5xl tracking-wide uppercase text-white">Sniper</span>
+        </div>
+        <div className="h-1 w-full bg-gunmetal relative overflow-hidden mt-4">
+          <motion.div 
+            className="absolute top-0 left-0 h-full bg-crimson"
+            initial={{ width: "0%" }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.2 }}
+          />
+        </div>
+        <div className="mt-4 flex justify-between font-sans text-sm font-black uppercase tracking-widest text-crimson">
+          <span>Ignition Sequence</span>
+          <span>{Math.min(progress, 100)}%</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export { Navbar, Hero, Services, About, Gallery, Reviews, Footer, Preloader, CustomCursor };
