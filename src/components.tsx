@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Menu, X, MapPin, Phone, Clock, 
-  Wrench, Settings, Zap, Shield, Star, Quote,
-  ArrowRight, Crosshair, ChevronRight, Instagram, Facebook, Youtube
+  ArrowRight, Crosshair, Instagram, Facebook, Youtube, Star, Quote
 } from 'lucide-react';
+import { Magnetic } from './components/Magnetic';
+import { Hero } from './components/Hero';
 
 const IMAGES = {
   hero: "https://images.unsplash.com/photo-1583122622483-34b82711685e?auto=format&fit=crop&q=80&w=2000",
@@ -53,9 +54,11 @@ function Navbar() {
         </nav>
 
         <div className="hidden md:block">
-          <a href="#contact" className="bg-crimson hover:bg-white hover:text-ink text-white px-8 py-3 font-display text-xl tracking-wider uppercase transition-all transform skew-x-[-10deg] inline-block">
-            <div className="skew-x-[10deg]">Get a Quote</div>
-          </a>
+          <Magnetic>
+            <a href="#contact" className="bg-crimson hover:bg-white hover:text-ink text-white px-8 py-3 font-display text-xl tracking-wider uppercase transition-all transform skew-x-[-10deg] inline-block">
+              <div className="skew-x-[10deg]">Get a Quote</div>
+            </a>
+          </Magnetic>
         </div>
 
         <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -83,58 +86,7 @@ function Navbar() {
   );
 }
 
-function Hero() {
-  return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden bg-ink">
-      {/* Massive Background Text */}
-      <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center font-display text-[25vw] leading-[0.75] uppercase text-stroke-thick opacity-20 z-0 pointer-events-none select-none whitespace-nowrap">
-        SNIPER
-      </h1>
 
-      <div className="absolute inset-0 z-10">
-        <img src={IMAGES.hero} alt="Off-road truck in dust" className="w-full h-full object-cover opacity-60 mix-blend-luminosity" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/60 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent"></div>
-      </div>
-      
-      <div className="relative z-20 max-w-7xl mx-auto px-6 w-full pt-20">
-        <motion.div 
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-4xl"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-1 w-16 bg-crimson"></div>
-            <span className="font-sans font-black uppercase tracking-[0.3em] text-sm text-crimson">Lake Charles, LA</span>
-          </div>
-          <h2 className="font-display text-[12vw] md:text-[8rem] leading-[0.85] uppercase tracking-tight mb-8 text-white drop-shadow-2xl">
-            Built <br/><span className="text-crimson">Different</span>
-          </h2>
-          <p className="font-sans font-medium text-lg md:text-2xl text-gray-300 mb-12 max-w-2xl leading-relaxed border-l-4 border-crimson pl-6">
-            Premium off-road vehicle customization. Lifts, wheels, tires, and accessories engineered for absolute dominance.
-          </p>
-          <div className="flex flex-wrap gap-6">
-            <a href="#contact" className="bg-crimson hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block">
-              <div className="skew-x-[10deg] flex items-center gap-3">
-                Book Your Build <ArrowRight className="w-6 h-6" />
-              </div>
-            </a>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Marquee Tape */}
-      <div className="absolute bottom-0 left-0 right-0 bg-crimson text-white py-3 z-30 overflow-hidden border-y-2 border-black transform -rotate-1 origin-bottom-left scale-105">
-        <div className="animate-marquee font-display text-2xl uppercase tracking-widest whitespace-nowrap">
-          <span className="mx-4">Lifts</span> • <span className="mx-4">Wheels</span> • <span className="mx-4">Tires</span> • <span className="mx-4">Armor</span> • <span className="mx-4">Performance</span> • <span className="mx-4">Lighting</span> • 
-          <span className="mx-4">Lifts</span> • <span className="mx-4">Wheels</span> • <span className="mx-4">Tires</span> • <span className="mx-4">Armor</span> • <span className="mx-4">Performance</span> • <span className="mx-4">Lighting</span> • 
-          <span className="mx-4">Lifts</span> • <span className="mx-4">Wheels</span> • <span className="mx-4">Tires</span> • <span className="mx-4">Armor</span> • <span className="mx-4">Performance</span> • <span className="mx-4">Lighting</span> • 
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function Services() {
   const services = [
@@ -181,7 +133,11 @@ function Services() {
               </div>
 
               <div className="mt-6 md:mt-0 relative z-10 text-crimson group-hover:text-ink transition-colors transform group-hover:translate-x-4 duration-300">
-                <ArrowRight className="w-10 h-10 md:w-16 md:h-16" />
+                <Magnetic strength={20}>
+                  <div className="p-4 bg-ink/10 rounded-full backdrop-blur-sm group-hover:bg-white/20 transition-colors">
+                    <ArrowRight className="w-10 h-10 md:w-16 md:h-16" />
+                  </div>
+                </Magnetic>
               </div>
             </motion.div>
           ))}
@@ -223,10 +179,11 @@ function About() {
           <motion.div 
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:col-span-5"
           >
-            <h2 className="font-display text-6xl md:text-8xl uppercase tracking-tight mb-8 leading-[0.9]">
+            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl uppercase tracking-tight mb-8 leading-[0.9]">
               Precision <br/>
               <span className="text-transparent bg-clip-text stroke-white text-stroke-thick">Meets</span> <br/>
               <span className="text-crimson">Power</span>
@@ -288,8 +245,8 @@ function Gallery() {
               <img src={img} alt={`Build ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1 grayscale group-hover:grayscale-0" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
                 <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
-                  <h4 className="font-display text-4xl uppercase tracking-wide text-white mb-2">Project {['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot'][idx]}</h4>
-                  <p className="font-sans text-crimson font-black text-sm uppercase tracking-widest">6" Lift / 35s / Armor</p>
+                  <h4 className="font-display text-3xl md:text-4xl uppercase tracking-wide text-white mb-2">Project {['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot'][idx]}</h4>
+                  <p className="font-sans text-crimson font-black text-xs md:text-sm uppercase tracking-widest">6" Lift / 35s / Armor</p>
                 </div>
               </div>
             </motion.div>
@@ -297,11 +254,13 @@ function Gallery() {
         </div>
         
         <div className="mt-16 text-center">
-          <a href="#" className="bg-transparent border-4 border-white hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block">
-            <div className="skew-x-[10deg] flex items-center gap-3">
-              View Full Gallery <ArrowRight className="w-6 h-6" />
-            </div>
-          </a>
+          <Magnetic>
+            <a href="#" className="bg-transparent border-4 border-white hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block">
+              <div className="skew-x-[10deg] flex items-center gap-3">
+                View Full Gallery <ArrowRight className="w-6 h-6" />
+              </div>
+            </a>
+          </Magnetic>
         </div>
       </div>
     </section>
@@ -391,9 +350,11 @@ function Footer() {
           <div>
             <h4 className="font-display text-3xl uppercase tracking-widest mb-8 text-white">Ready to Build?</h4>
             <p className="font-sans text-gray-400 mb-8 font-medium">Contact us today to discuss your vision and get a quote.</p>
-            <a href="#" className="bg-crimson hover:bg-white hover:text-ink text-white px-8 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block w-full text-center">
-              <div className="skew-x-[10deg]">Book Your Build</div>
-            </a>
+            <Magnetic>
+              <a href="#" className="bg-crimson hover:bg-white hover:text-ink text-white px-8 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block w-full text-center">
+                <div className="skew-x-[10deg]">Book Your Build</div>
+              </a>
+            </Magnetic>
           </div>
 
         </div>
@@ -425,7 +386,9 @@ function CustomCursor() {
         target.tagName.toLowerCase() === 'a' || 
         target.tagName.toLowerCase() === 'button' ||
         target.closest('a') ||
-        target.closest('button')
+        target.closest('button') ||
+        target.parentElement?.tagName.toLowerCase() === 'a' ||
+        target.parentElement?.tagName.toLowerCase() === 'button'
       ) {
         setIsHovering(true);
       } else {
