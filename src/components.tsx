@@ -93,12 +93,10 @@ function Navbar() {
 
 function Services() {
   const services = [
-    { title: "Suspension Lifts", desc: "Premium lift kits installed with military precision for maximum clearance and ride quality.", image: IMAGES.services[0] },
-    { title: "Wheels & Tires", desc: "Aggressive wheel and tire packages perfectly matched to your build's stance and purpose.", image: IMAGES.services[1] },
-    { title: "Armor & Bumpers", desc: "Heavy-duty steel bumpers, rock sliders, and skid plates to protect your investment.", image: IMAGES.services[2] },
-    { title: "Lighting & Audio", desc: "High-output LED light bars, rock lights, and premium marine-grade audio systems.", image: IMAGES.services[3] },
-    { title: "Performance", desc: "Intakes, exhausts, and tuning to give your rig the power to match its looks.", image: IMAGES.services[4] },
-    { title: "Accessories", desc: "Winches, recovery gear, roof racks, and overlanding equipment.", image: IMAGES.services[5] },
+    { title: "Lift Kits", desc: "Raise the height of your vehicle's suspension. Clear greater ground and fit larger tires!", image: IMAGES.services[0] },
+    { title: "Leveling Kits", desc: "Modify the front end of your vehicle by raising it for a more balanced and level stance!", image: IMAGES.services[1] },
+    { title: "Wheels & Tires", desc: "Unparalleled performance, durability, and traction in all conditions!", image: IMAGES.services[2] },
+    { title: "Auto Accessories", desc: "Call to learn about all of our vehicle accessories. LED lights and more!", image: IMAGES.services[3] }
   ];
 
   return (
@@ -199,10 +197,10 @@ function About() {
             
             <div className="space-y-6 font-sans text-gray-300 text-xl leading-relaxed font-medium">
               <p>
-                Located in the heart of Lake Charles, Sniper Off Road was founded on a simple principle: build it right, build it tough, and make it look badass.
+                Sniper Off Road is an automotive customization shop located at 510 S Martin Luther King Hwy in Lake Charles, Louisiana. We specialize in various customization services for off-road vehicles.
               </p>
               <p>
-                We are not a quick-lube shop. We are automotive craftsmen specializing in high-end off-road customization. From daily-driven leveled trucks to fully armored trail rigs, we treat every vehicle like it's our own.
+                The shop is known for providing high-quality work and excellent customer service. We have received positive reviews from customers, highlighting the professionalism and expertise of our team.
               </p>
             </div>
 
@@ -346,11 +344,15 @@ function Footer() {
               </li>
               <li className="flex items-center gap-4">
                 <Phone className="w-6 h-6 text-crimson shrink-0" />
-                <span className="text-xl text-white font-bold">(337) 555-0198</span>
+                <a href="tel:3372633717" className="text-xl text-white font-bold hover:text-crimson transition-colors">(337) 263-3717</a>
+              </li>
+              <li className="flex items-center gap-4 font-bold">
+                 <span className="text-crimson shrink-0 text-2xl leading-none">@</span>
+                 <a href="mailto:robbiesutphin@yahoo.com" className="text-white hover:text-crimson transition-colors">robbiesutphin@yahoo.com</a>
               </li>
               <li className="flex items-start gap-4">
                 <Clock className="w-6 h-6 text-crimson shrink-0 mt-1" />
-                <span>Mon-Fri: 8am - 6pm<br/>Sat: By Appointment<br/>Sun: Out on the trails</span>
+                <span>Mon - Fri: 9:00 AM - 5:00 PM<br/>Sat & Sun: Closed</span>
               </li>
             </ul>
           </div>
