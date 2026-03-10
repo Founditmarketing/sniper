@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { motion, AnimatePresence, useTransform } from 'motion/react';
 import {
   Menu, X, MapPin, Phone, Clock,
   ArrowRight, Crosshair, Instagram, Facebook, Youtube, Star, Quote, ChevronLeft, ChevronRight
@@ -99,98 +99,40 @@ function Services() {
     { title: "Auto Accessories", desc: "Call to learn about all of our vehicle accessories. LED lights and more!", image: IMAGES.services[3] }
   ];
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
-  };
-
-  const springConfig = { damping: 25, stiffness: 300, mass: 0.5 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
-
-  const [activeService, setActiveService] = useState<number | null>(null);
-
   return (
     <section id="services" className="py-32 bg-gunmetal relative clip-diagonal-top -mt-10 z-20 bg-brushed-metal">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
-            <h2 className="font-display text-6xl md:text-8xl uppercase tracking-tight mb-4 text-stroke-thick opacity-80">Our <span className="text-crimson text-stroke-none opacity-100">Arsenal</span></h2>
-            <p className="font-sans text-gray-400 max-w-xl text-xl font-medium">We don't just bolt on parts. We engineer complete systems designed to work together flawlessly.</p>
+            <h2 className="font-display text-6xl md:text-8xl uppercase tracking-tight mb-4 text-stroke-thick opacity-80">Our <span className="text-crimson text-stroke-none opacity-100">Services</span></h2>
+            <p className="font-sans text-gray-400 max-w-xl text-xl font-medium">We specialize in various customization services for off-road vehicles. Quality, Expertise, Customer Service, and Reputation you can trust.</p>
           </div>
         </div>
 
-        <div
-          className="border-t-4 border-ink relative"
-          onMouseMove={handleMouseMove}
-          onMouseLeave={() => setActiveService(null)}
-        >
-          {/* Following Image Box */}
-          <motion.div
-            className="hidden lg:block absolute z-30 pointer-events-none w-[400px] h-[250px] shadow-2xl skew-x-[-5deg] overflow-hidden"
-            style={{
-              left: smoothX,
-              top: smoothY,
-              x: '-50%',
-              y: '-50%'
-            }}
-            animate={{
-              opacity: activeService !== null ? 1 : 0,
-              scale: activeService !== null ? 1 : 0.8
-            }}
-            transition={{ opacity: { duration: 0.3 }, scale: { duration: 0.3 } }}
-          >
-            {activeService !== null && (
-              <>
-                <AnimatePresence mode="popLayout">
-                  <motion.img
-                    key={activeService}
-                    src={services[activeService].image}
-                    alt="Service"
-                    initial={{ scale: 1.2, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="w-full h-full object-cover"
-                  />
-                </AnimatePresence>
-                <div className="absolute inset-0 border-4 border-ink mix-blend-overlay"></div>
-              </>
-            )}
-          </motion.div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              onMouseEnter={() => setActiveService(idx)}
-              className="group relative border-b border-ink/50 py-10 md:py-16 flex flex-col md:flex-row items-start md:items-center justify-between hover:bg-crimson transition-colors duration-500 px-6 cursor-pointer overflow-hidden"
+              className="group relative overflow-hidden bg-ink border-2 border-ink/20 hover:border-crimson transition-colors duration-500 rounded-lg"
             >
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-4 md:gap-12 w-full md:w-auto">
-                <span className="font-display text-5xl sm:text-6xl md:text-7xl text-ink/20 group-hover:text-ink/40 transition-colors">0{idx + 1}</span>
-                <div>
-                  <h3 className="font-display text-4xl sm:text-5xl md:text-6xl uppercase tracking-wide mb-2 group-hover:text-ink transition-colors">{service.title}</h3>
-                  <p className="font-sans text-gray-400 group-hover:text-ink/80 max-w-lg text-base sm:text-lg font-medium transition-colors">{service.desc}</p>
+              <div className="h-48 w-full overflow-hidden relative">
+                <img src={service.image} alt={service.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent"></div>
+              </div>
+              <div className="p-8 relative z-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-display text-3xl uppercase tracking-wide group-hover:text-crimson transition-colors">{service.title}</h3>
+                  <span className="font-display text-2xl text-ink/40 group-hover:text-ink/10">0{idx + 1}</span>
                 </div>
-              </div>
-
-              {/* Mobile Image (Always visible on small screens to make it impressive) */}
-              <div className="block lg:hidden w-full h-48 mt-6 relative overflow-hidden border-2 border-ink/20 skew-x-[-2deg]">
-                <img src={service.image} alt={service.title} className="w-full h-full object-cover grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" />
-              </div>
-
-              <div className="mt-6 md:mt-0 relative z-10 text-crimson group-hover:text-ink transition-colors transform group-hover:translate-x-4 duration-300 self-end md:self-auto">
-                <Magnetic strength={20}>
-                  <div className="p-4 bg-ink/10 rounded-full backdrop-blur-sm group-hover:bg-white/20 transition-colors">
-                    <ArrowRight className="w-10 h-10 md:w-16 md:h-16" />
-                  </div>
+                <p className="font-sans text-gray-400 text-sm font-medium leading-relaxed mb-6">{service.desc}</p>
+                <Magnetic strength={10}>
+                  <a href="tel:3372633717" className="inline-flex items-center gap-2 text-crimson hover:text-white font-sans font-black text-xs uppercase tracking-widest transition-colors">
+                    Call For More Info <ArrowRight className="w-4 h-4" />
+                  </a>
                 </Magnetic>
               </div>
             </motion.div>
@@ -238,31 +180,30 @@ function About() {
             className="lg:col-span-5"
           >
             <h2 className="font-display text-4xl md:text-6xl lg:text-7xl uppercase tracking-tight mb-8 leading-[0.9] flex flex-col gap-1 md:gap-2">
-              <div className="overflow-hidden"><motion.span initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }} className="block">Precision</motion.span></div>
-              <div className="overflow-hidden"><motion.span initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.1, ease: [0.33, 1, 0.68, 1] }} className="block text-transparent bg-clip-text stroke-white text-stroke-thick">Meets</motion.span></div>
-              <div className="overflow-hidden"><motion.span initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.2, ease: [0.33, 1, 0.68, 1] }} className="block text-crimson">Power</motion.span></div>
+              <div className="overflow-hidden"><motion.span initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }} className="block">Why</motion.span></div>
+              <div className="overflow-hidden"><motion.span initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.1, ease: [0.33, 1, 0.68, 1] }} className="block text-crimson">Choose Us?</motion.span></div>
             </h2>
 
-            <div className="space-y-6 font-sans text-gray-300 text-xl leading-relaxed font-medium">
+            <div className="space-y-6 font-sans text-gray-300 text-lg leading-relaxed font-medium">
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }}>
-                Sniper Off Road is an automotive customization shop located at 510 S Martin Luther King Hwy in Lake Charles, Louisiana. We specialize in various customization services for off-road vehicles.
+                Sniper Off Road is an automotive customization shop located at 510 S Martin Luther King Hwy in Lake Charles, Louisiana. The shop is known for providing high-quality work and excellent customer service. We have received positive reviews from customers, highlighting the professionalism and expertise of our team.
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.6 }}>
-                The shop is known for providing high-quality work and excellent customer service. We have received positive reviews from customers, highlighting the professionalism and expertise of our team.
+                For more details or to inquire about our services, you can contact us at (337) 263-3717. Our operating hours are Monday to Friday from 9:00 AM to 5:00 PM (Closed Weekends).
               </motion.p>
             </div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.8 }}
-              className="grid grid-cols-2 gap-8 mt-16 pt-12 border-t-4 border-gunmetal"
+              className="grid grid-cols-2 gap-8 mt-12 pt-8 border-t-2 border-gunmetal"
             >
               <div>
-                <div className="font-display text-6xl text-white mb-2">500+</div>
-                <div className="font-sans text-sm font-black text-crimson uppercase tracking-widest">Builds Completed</div>
+                <div className="font-display text-3xl text-white mb-2">Quality & Expertise</div>
+                <div className="font-sans text-xs font-black text-gray-400 uppercase tracking-widest leading-relaxed">We deliver top-tier craftsmanship on every single build.</div>
               </div>
               <div>
-                <div className="font-display text-6xl text-white mb-2">100%</div>
-                <div className="font-sans text-sm font-black text-crimson uppercase tracking-widest">Satisfaction</div>
+                <div className="font-display text-3xl text-white mb-2">Reputation</div>
+                <div className="font-sans text-xs font-black text-gray-400 uppercase tracking-widest leading-relaxed">Our customer service and stellar reviews speak for themselves.</div>
               </div>
             </motion.div>
           </motion.div>
@@ -487,76 +428,7 @@ function Footer() {
   );
 }
 
-function CustomCursor() {
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
 
-  const springX = useSpring(cursorX, { damping: 25, stiffness: 700, mass: 0.5 });
-  const springY = useSpring(cursorY, { damping: 25, stiffness: 700, mass: 0.5 });
-
-  const cursorXOuter = useMotionValue(-100);
-  const cursorYOuter = useMotionValue(-100);
-
-  const springXOuter = useSpring(cursorXOuter, { damping: 30, stiffness: 400, mass: 0.8 });
-  const springYOuter = useSpring(cursorYOuter, { damping: 30, stiffness: 400, mass: 0.8 });
-
-  const [isHovering, setIsHovering] = useState(false);
-
-  useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      cursorX.set(e.clientX - 8);
-      cursorY.set(e.clientY - 8);
-      cursorXOuter.set(e.clientX - 24);
-      cursorYOuter.set(e.clientY - 24);
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (
-        target.tagName.toLowerCase() === 'a' ||
-        target.tagName.toLowerCase() === 'button' ||
-        target.closest('a') ||
-        target.closest('button') ||
-        target.parentElement?.tagName.toLowerCase() === 'a' ||
-        target.parentElement?.tagName.toLowerCase() === 'button'
-      ) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
-    };
-
-    window.addEventListener('mousemove', updateMousePosition);
-    window.addEventListener('mouseover', handleMouseOver);
-
-    return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
-      window.removeEventListener('mouseover', handleMouseOver);
-    };
-  }, [cursorX, cursorY, cursorXOuter, cursorYOuter]);
-
-  return (
-    <>
-      <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-crimson rounded-full pointer-events-none z-[100] mix-blend-difference hidden md:block select-none"
-        style={{ x: springX, y: springY }}
-        animate={{
-          scale: isHovering ? 2.5 : 1,
-        }}
-        transition={{ type: "tween", ease: "backOut", duration: 0.15 }}
-      />
-      <motion.div
-        className="fixed top-0 left-0 w-12 h-12 border-2 border-crimson rounded-full pointer-events-none z-[99] hidden md:block select-none"
-        style={{ x: springXOuter, y: springYOuter }}
-        animate={{
-          scale: isHovering ? 1.5 : 1,
-          opacity: isHovering ? 0 : 0.6
-        }}
-        transition={{ type: "tween", ease: "easeOut", duration: 0.3 }}
-      />
-    </>
-  );
-}
 
 function Preloader({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0);
@@ -605,4 +477,4 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-export { Navbar, Hero, Services, About, Gallery, Reviews, Footer, Preloader, CustomCursor };
+export { Navbar, Hero, Services, About, Gallery, Reviews, Footer, Preloader };

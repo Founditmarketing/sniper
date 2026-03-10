@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { AnimatePresence } from 'motion/react';
-import { Navbar, Hero, Services, About, Gallery, Reviews, Footer, Preloader, CustomCursor } from './components';
+import { Navbar, Hero, Services, About, Gallery, Reviews, Footer, Preloader } from './components';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
 
   return (
     <>
-      <CustomCursor />
       <AnimatePresence>
         {loading && <Preloader onComplete={() => setLoading(false)} />}
       </AnimatePresence>
