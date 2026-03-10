@@ -1,30 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Menu, X, MapPin, Phone, Clock, 
-  ArrowRight, Crosshair, Instagram, Facebook, Youtube, Star, Quote
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'motion/react';
+import {
+  Menu, X, MapPin, Phone, Clock,
+  ArrowRight, Crosshair, Instagram, Facebook, Youtube, Star, Quote, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { Magnetic } from './components/Magnetic';
 import { Hero } from './components/Hero';
 
 const IMAGES = {
-  hero: "/images/ford.png",
-  about: "/images/chevy.png",
+  hero: "/images/real_gallery_1.jpg",
+  about: "/images/real_gallery_8.jpg",
   services: [
-    "/images/ford.png",
-    "/images/chevy.png",
-    "/images/toyota.png",
-    "/images/jeep.png",
-    "/images/colorado.png",
-    "/images/ram.png"
+    "/images/real_services_1.png",
+    "/images/real_services_2.png",
+    "/images/real_services_3.png",
+    "/images/real_gallery_6.jpg",
+    "/images/real_gallery_7.jpg",
+    "/images/real_gallery_5.jpg"
   ],
   gallery: [
-    "/images/raptor.png",
-    "/images/bronco.png",
-    "/images/gladiator.png",
-    "/images/classic.png",
-    "/images/tundra.png",
-    "/images/utv.png"
+    "/images/real_gallery_2.jpg",
+    "/images/real_gallery_3.jpg",
+    "/images/real_gallery_4.jpg",
+    "/images/real_gallery_5.jpg",
+    "/images/real_gallery_7.jpg",
+    "/images/real_gallery_8.jpg"
   ]
 };
 
@@ -45,12 +45,12 @@ function Navbar() {
           <Crosshair className="w-8 h-8 text-crimson" />
           <span className="font-display text-3xl tracking-wide uppercase mt-1">Sniper <span className="text-crimson">Off Road</span></span>
         </div>
-        
-        <nav className="hidden md:flex items-center gap-8 font-sans font-bold text-sm uppercase tracking-widest">
-          <a href="#services" className="hover:text-crimson transition-colors">Services</a>
-          <a href="#about" className="hover:text-crimson transition-colors">About</a>
-          <a href="#gallery" className="hover:text-crimson transition-colors">Gallery</a>
-          <a href="#reviews" className="hover:text-crimson transition-colors">Reviews</a>
+
+        <nav className="hidden md:flex items-center gap-4 font-sans font-bold text-sm uppercase tracking-widest">
+          <Magnetic strength={10}><a href="#services" className="px-4 py-2 hover:text-crimson transition-colors inline-block">Services</a></Magnetic>
+          <Magnetic strength={10}><a href="#about" className="px-4 py-2 hover:text-crimson transition-colors inline-block">About</a></Magnetic>
+          <Magnetic strength={10}><a href="#gallery" className="px-4 py-2 hover:text-crimson transition-colors inline-block">Gallery</a></Magnetic>
+          <Magnetic strength={10}><a href="#reviews" className="px-4 py-2 hover:text-crimson transition-colors inline-block">Reviews</a></Magnetic>
         </nav>
 
         <div className="hidden md:block">
@@ -68,7 +68,7 @@ function Navbar() {
 
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, clipPath: "circle(0% at 100% 0)" }}
             animate={{ opacity: 1, clipPath: "circle(150% at 100% 0)" }}
             exit={{ opacity: 0, clipPath: "circle(0% at 100% 0)" }}
@@ -99,6 +99,21 @@ function Services() {
     { title: "Auto Accessories", desc: "Call to learn about all of our vehicle accessories. LED lights and more!", image: IMAGES.services[3] }
   ];
 
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
+  const springConfig = { damping: 25, stiffness: 300, mass: 0.5 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const [activeService, setActiveService] = useState<number | null>(null);
+
   return (
     <section id="services" className="py-32 bg-gunmetal relative clip-diagonal-top -mt-10 z-20 bg-brushed-metal">
       <div className="max-w-7xl mx-auto px-6">
@@ -109,14 +124,53 @@ function Services() {
           </div>
         </div>
 
-        <div className="border-t-4 border-ink">
+        <div
+          className="border-t-4 border-ink relative"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={() => setActiveService(null)}
+        >
+          {/* Following Image Box */}
+          <motion.div
+            className="hidden lg:block absolute z-30 pointer-events-none w-[400px] h-[250px] shadow-2xl skew-x-[-5deg] overflow-hidden"
+            style={{
+              left: smoothX,
+              top: smoothY,
+              x: '-50%',
+              y: '-50%'
+            }}
+            animate={{
+              opacity: activeService !== null ? 1 : 0,
+              scale: activeService !== null ? 1 : 0.8
+            }}
+            transition={{ opacity: { duration: 0.3 }, scale: { duration: 0.3 } }}
+          >
+            {activeService !== null && (
+              <>
+                <AnimatePresence mode="popLayout">
+                  <motion.img
+                    key={activeService}
+                    src={services[activeService].image}
+                    alt="Service"
+                    initial={{ scale: 1.2, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 border-4 border-ink mix-blend-overlay"></div>
+              </>
+            )}
+          </motion.div>
+
           {services.map((service, idx) => (
-            <motion.div 
+            <motion.div
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
+              onMouseEnter={() => setActiveService(idx)}
               className="group relative border-b border-ink/50 py-10 md:py-16 flex flex-col md:flex-row items-start md:items-center justify-between hover:bg-crimson transition-colors duration-500 px-6 cursor-pointer overflow-hidden"
             >
               <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-4 md:gap-12 w-full md:w-auto">
@@ -126,16 +180,10 @@ function Services() {
                   <p className="font-sans text-gray-400 group-hover:text-ink/80 max-w-lg text-base sm:text-lg font-medium transition-colors">{service.desc}</p>
                 </div>
               </div>
-              
-              {/* Hover Image Reveal */}
-              <div className="hidden lg:block absolute right-10 top-1/2 -translate-y-1/2 w-[400px] h-[250px] opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-500 pointer-events-none z-0 shadow-2xl skew-x-[-5deg]">
-                <img src={service.image} alt={service.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
-                <div className="absolute inset-0 border-4 border-ink mix-blend-overlay"></div>
-              </div>
 
               {/* Mobile Image (Always visible on small screens to make it impressive) */}
               <div className="block lg:hidden w-full h-48 mt-6 relative overflow-hidden border-2 border-ink/20 skew-x-[-2deg]">
-                 <img src={service.image} alt={service.title} className="w-full h-full object-cover grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" />
+                <img src={service.image} alt={service.title} className="w-full h-full object-cover grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" />
               </div>
 
               <div className="mt-6 md:mt-0 relative z-10 text-crimson group-hover:text-ink transition-colors transform group-hover:translate-x-4 duration-300 self-end md:self-auto">
@@ -163,7 +211,7 @@ function About() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -173,7 +221,7 @@ function About() {
             <div className="relative z-10 overflow-hidden">
               <img src={IMAGES.about} alt="Mechanic working on suspension" className="w-full h-[700px] object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-105 hover:scale-100" />
             </div>
-            
+
             <div className="absolute -bottom-10 -right-10 bg-crimson text-white p-10 z-20 shadow-2xl border-8 border-ink">
               <div className="text-center">
                 <div className="font-display text-8xl leading-none">10+</div>
@@ -182,29 +230,32 @@ function About() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:col-span-5"
           >
-            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl uppercase tracking-tight mb-8 leading-[0.9]">
-              Precision <br/>
-              <span className="text-transparent bg-clip-text stroke-white text-stroke-thick">Meets</span> <br/>
-              <span className="text-crimson">Power</span>
+            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl uppercase tracking-tight mb-8 leading-[0.9] flex flex-col gap-1 md:gap-2">
+              <div className="overflow-hidden"><motion.span initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }} className="block">Precision</motion.span></div>
+              <div className="overflow-hidden"><motion.span initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.1, ease: [0.33, 1, 0.68, 1] }} className="block text-transparent bg-clip-text stroke-white text-stroke-thick">Meets</motion.span></div>
+              <div className="overflow-hidden"><motion.span initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.2, ease: [0.33, 1, 0.68, 1] }} className="block text-crimson">Power</motion.span></div>
             </h2>
-            
+
             <div className="space-y-6 font-sans text-gray-300 text-xl leading-relaxed font-medium">
-              <p>
+              <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }}>
                 Sniper Off Road is an automotive customization shop located at 510 S Martin Luther King Hwy in Lake Charles, Louisiana. We specialize in various customization services for off-road vehicles.
-              </p>
-              <p>
+              </motion.p>
+              <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.6 }}>
                 The shop is known for providing high-quality work and excellent customer service. We have received positive reviews from customers, highlighting the professionalism and expertise of our team.
-              </p>
+              </motion.p>
             </div>
 
-            <div className="grid grid-cols-2 gap-8 mt-16 pt-12 border-t-4 border-gunmetal">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.8 }}
+              className="grid grid-cols-2 gap-8 mt-16 pt-12 border-t-4 border-gunmetal"
+            >
               <div>
                 <div className="font-display text-6xl text-white mb-2">500+</div>
                 <div className="font-sans text-sm font-black text-crimson uppercase tracking-widest">Builds Completed</div>
@@ -213,7 +264,7 @@ function About() {
                 <div className="font-display text-6xl text-white mb-2">100%</div>
                 <div className="font-sans text-sm font-black text-crimson uppercase tracking-widest">Satisfaction</div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
@@ -222,90 +273,145 @@ function About() {
 }
 
 function Gallery() {
-  return (
-    <section id="gallery" className="py-32 bg-gunmetal relative clip-diagonal bg-brushed-metal z-20">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div>
-            <h2 className="font-display text-6xl md:text-8xl uppercase tracking-tight mb-4 text-stroke-thick opacity-80">Confirmed <span className="text-crimson text-stroke-none opacity-100">Kills</span></h2>
-            <p className="font-sans text-gray-400 text-xl font-medium">A showcase of our most recent builds.</p>
-          </div>
-          <div className="flex flex-wrap gap-4 font-sans font-black text-xs sm:text-sm uppercase tracking-widest mt-6 md:mt-0">
-            <button className="text-crimson border-b-4 border-crimson pb-2">All Builds</button>
-            <button className="text-gray-500 hover:text-white transition-colors pb-2">Trucks</button>
-            <button className="text-gray-500 hover:text-white transition-colors pb-2">Jeeps</button>
-            <button className="text-gray-500 hover:text-white transition-colors pb-2">Broncos</button>
-          </div>
-        </div>
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {IMAGES.gallery.map((img, idx) => (
-            <motion.div 
-              key={idx}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className={`group relative overflow-hidden bg-ink border-4 border-transparent hover:border-crimson transition-all duration-500 ${idx === 0 || idx === 3 ? 'md:col-span-2 lg:col-span-2 aspect-video' : 'aspect-square'}`}
-            >
-              <img src={img} alt={`Build ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1 grayscale group-hover:grayscale-0" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
-                <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
-                  <h4 className="font-display text-3xl md:text-4xl uppercase tracking-wide text-white mb-2">Project {['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot'][idx]}</h4>
-                  <p className="font-sans text-crimson font-black text-xs md:text-sm uppercase tracking-widest">6" Lift / 35s / Armor</p>
+  return (
+    <>
+      <section id="gallery" className="py-32 bg-gunmetal relative clip-diagonal bg-brushed-metal z-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div>
+              <h2 className="font-display text-6xl md:text-8xl uppercase tracking-tight mb-4 text-stroke-thick opacity-80">Confirmed <span className="text-crimson text-stroke-none opacity-100">Kills</span></h2>
+              <p className="font-sans text-gray-400 text-xl font-medium">A showcase of our most recent builds.</p>
+            </div>
+            <div className="flex flex-wrap gap-4 font-sans font-black text-xs sm:text-sm uppercase tracking-widest mt-6 md:mt-0">
+              <button className="text-crimson border-b-4 border-crimson pb-2">All Builds</button>
+              <button className="text-gray-500 hover:text-white transition-colors pb-2">Trucks</button>
+              <button className="text-gray-500 hover:text-white transition-colors pb-2">Jeeps</button>
+              <button className="text-gray-500 hover:text-white transition-colors pb-2">Broncos</button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {IMAGES.gallery.map((img, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                onClick={() => setSelectedImage(img)}
+                className={`group relative overflow-hidden bg-ink border-4 border-transparent hover:border-crimson transition-all duration-500 cursor-pointer ${idx === 0 || idx === 3 ? 'md:col-span-2 lg:col-span-2 aspect-video' : 'aspect-square'}`}
+              >
+                <img src={img} alt={`Build ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1 grayscale group-hover:grayscale-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                  <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <h4 className="font-display text-3xl md:text-4xl uppercase tracking-wide text-white mb-2">Project {['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot'][idx]}</h4>
+                    <p className="font-sans text-crimson font-black text-xs md:text-sm uppercase tracking-widest">6" Lift / 35s / Armor</p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Magnetic>
+              <a href="#" className="bg-transparent border-4 border-white hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block">
+                <div className="skew-x-[10deg] flex items-center gap-3">
+                  View Full Gallery <ArrowRight className="w-6 h-6" />
+                </div>
+              </a>
+            </Magnetic>
+          </div>
         </div>
-        
-        <div className="mt-16 text-center">
-          <Magnetic>
-            <a href="#" className="bg-transparent border-4 border-white hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block">
-              <div className="skew-x-[10deg] flex items-center gap-3">
-                View Full Gallery <ArrowRight className="w-6 h-6" />
-              </div>
-            </a>
-          </Magnetic>
-        </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-ink/95 backdrop-blur-md flex items-center justify-center p-4 md:p-10"
+            onClick={() => setSelectedImage(null)}
+          >
+            <button className="absolute top-6 right-6 text-white hover:text-crimson transition-colors z-[110]" onClick={() => setSelectedImage(null)}>
+              <X className="w-12 h-12" />
+            </button>
+            <motion.img
+              src={selectedImage}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="max-w-[90vw] max-h-[90vh] object-contain border-4 border-ink shadow-2xl skew-x-[-1deg]"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
 function Reviews() {
+  const reviews = [
+    { name: "Mike T.", vehicle: "2023 F-250 Tremor", text: "Sniper Off Road absolutely nailed the stance on my Tremor. The attention to detail on the suspension geometry is next level. Drives better than stock." },
+    { name: "Sarah J.", vehicle: "Jeep Wrangler JL", text: "Took my stock JL in for a complete overhaul. Lift, tires, bumpers, winch. They communicated every step of the way and the final product is a beast on the trails." },
+    { name: "David R.", vehicle: "Chevy Silverado 1500", text: "Best shop in Lake Charles hands down. They don't cut corners. If you want it done right the first time, bring it to Sniper." },
+    { name: "James L.", vehicle: "Toyota Tacoma TRD Pro", text: "Called for advice on leveling my Taco. They were super honest, didn't try to upsell me, and the installation was flawless. Highly recommend!" },
+    { name: "Chris B.", vehicle: "Ford Bronco Badlands", text: "What an amazing experience. They turned my fairly stock Bronco into a complete trail beast. The new wheels and tires are perfect." },
+  ];
+
   return (
-    <section id="reviews" className="py-32 bg-ink relative">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
+    <section id="reviews" className="py-32 bg-ink relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 mb-16">
+        <div className="text-center">
           <h2 className="font-display text-6xl md:text-8xl uppercase tracking-tight mb-4 text-stroke-thick opacity-80">Field <span className="text-crimson text-stroke-none opacity-100">Reports</span></h2>
           <div className="flex justify-center gap-2 text-crimson mb-4">
             {[...Array(5)].map((_, i) => <Star key={i} className="w-8 h-8 fill-current" />)}
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {[
-            { name: "Mike T.", vehicle: "2023 F-250 Tremor", text: "Sniper Off Road absolutely nailed the stance on my Tremor. The attention to detail on the suspension geometry is next level. Drives better than stock." },
-            { name: "Sarah J.", vehicle: "Jeep Wrangler JL", text: "Took my stock JL in for a complete overhaul. Lift, tires, bumpers, winch. They communicated every step of the way and the final product is a beast on the trails." },
-            { name: "David R.", vehicle: "Chevy Silverado 1500", text: "Best shop in Lake Charles hands down. They don't cut corners. If you want it done right the first time, bring it to Sniper." }
-          ].map((review, idx) => (
-            <motion.div 
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.2 }}
-              className="bg-gunmetal p-10 relative border-l-8 border-crimson hover:bg-white hover:text-ink transition-colors duration-500 group"
-            >
-              <Quote className="absolute top-6 right-6 w-16 h-16 text-white/5 group-hover:text-ink/5 transition-colors" />
-              <p className="font-sans text-xl font-medium italic mb-8 relative z-10 leading-relaxed text-gray-300 group-hover:text-ink/80 transition-colors">"{review.text}"</p>
-              <div>
-                <div className="font-display text-3xl uppercase tracking-wide group-hover:text-ink">{review.name}</div>
-                <div className="font-sans text-crimson font-black text-sm uppercase tracking-widest mt-1">{review.vehicle}</div>
+      <div className="relative w-full overflow-hidden border-y-4 border-gunmetal bg-ink py-10 group cursor-grab active:cursor-grabbing">
+        <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-ink to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-ink to-transparent z-10 pointer-events-none"></div>
+
+        <div className="flex animate-marquee group-hover:[animation-play-state:paused]" style={{ width: 'max-content', animationDuration: '40s' }}>
+          {/* First Half */}
+          <div className="flex gap-10 px-5">
+            {reviews.map((review, idx) => (
+              <div
+                key={idx}
+                className="bg-gunmetal p-10 relative border-l-8 border-crimson hover:bg-white hover:text-ink transition-colors duration-500 group w-[350px] md:w-[450px] shrink-0"
+              >
+                <Quote className="absolute top-6 right-6 w-16 h-16 text-white/5 group-hover:text-ink/5 transition-colors" />
+                <p className="font-sans text-lg md:text-xl font-medium italic mb-8 relative z-10 leading-relaxed text-gray-300 group-hover:text-ink/80 transition-colors">"{review.text}"</p>
+                <div>
+                  <div className="font-display text-2xl md:text-3xl uppercase tracking-wide group-hover:text-ink">{review.name}</div>
+                  <div className="font-sans text-crimson font-black text-sm uppercase tracking-widest mt-1">{review.vehicle}</div>
+                </div>
               </div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
+          {/* Second Half (Exact Duplicate) */}
+          <div className="flex gap-10 px-5">
+            {reviews.map((review, idx) => (
+              <div
+                key={idx}
+                className="bg-gunmetal p-10 relative border-l-8 border-crimson hover:bg-white hover:text-ink transition-colors duration-500 group w-[350px] md:w-[450px] shrink-0"
+              >
+                <Quote className="absolute top-6 right-6 w-16 h-16 text-white/5 group-hover:text-ink/5 transition-colors" />
+                <p className="font-sans text-lg md:text-xl font-medium italic mb-8 relative z-10 leading-relaxed text-gray-300 group-hover:text-ink/80 transition-colors">"{review.text}"</p>
+                <div>
+                  <div className="font-display text-2xl md:text-3xl uppercase tracking-wide group-hover:text-ink">{review.name}</div>
+                  <div className="font-sans text-crimson font-black text-sm uppercase tracking-widest mt-1">{review.vehicle}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -316,10 +422,10 @@ function Footer() {
   return (
     <footer id="contact" className="bg-ink border-t-8 border-crimson pt-24 pb-12 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-crimson/5 rounded-full blur-[120px] pointer-events-none"></div>
-      
+
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
-          
+
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-8">
               <Crosshair className="w-12 h-12 text-crimson" />
@@ -340,19 +446,19 @@ function Footer() {
             <ul className="space-y-6 font-sans text-gray-400 font-medium">
               <li className="flex items-start gap-4">
                 <MapPin className="w-6 h-6 text-crimson shrink-0 mt-1" />
-                <span>510 S Martin Luther King Hwy<br/>Lake Charles, LA 70601</span>
+                <span>510 S Martin Luther King Hwy<br />Lake Charles, LA 70601</span>
               </li>
               <li className="flex items-center gap-4">
                 <Phone className="w-6 h-6 text-crimson shrink-0" />
                 <a href="tel:3372633717" className="text-xl text-white font-bold hover:text-crimson transition-colors">(337) 263-3717</a>
               </li>
               <li className="flex items-center gap-4 font-bold">
-                 <span className="text-crimson shrink-0 text-2xl leading-none">@</span>
-                 <a href="mailto:robbiesutphin@yahoo.com" className="text-white hover:text-crimson transition-colors">robbiesutphin@yahoo.com</a>
+                <span className="text-crimson shrink-0 text-2xl leading-none">@</span>
+                <a href="mailto:robbiesutphin@yahoo.com" className="text-white hover:text-crimson transition-colors">robbiesutphin@yahoo.com</a>
               </li>
               <li className="flex items-start gap-4">
                 <Clock className="w-6 h-6 text-crimson shrink-0 mt-1" />
-                <span>Mon - Fri: 9:00 AM - 5:00 PM<br/>Sat & Sun: Closed</span>
+                <span>Mon - Fri: 9:00 AM - 5:00 PM<br />Sat & Sun: Closed</span>
               </li>
             </ul>
           </div>
@@ -382,18 +488,32 @@ function Footer() {
 }
 
 function CustomCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+
+  const springX = useSpring(cursorX, { damping: 25, stiffness: 700, mass: 0.5 });
+  const springY = useSpring(cursorY, { damping: 25, stiffness: 700, mass: 0.5 });
+
+  const cursorXOuter = useMotionValue(-100);
+  const cursorYOuter = useMotionValue(-100);
+
+  const springXOuter = useSpring(cursorXOuter, { damping: 30, stiffness: 400, mass: 0.8 });
+  const springYOuter = useSpring(cursorYOuter, { damping: 30, stiffness: 400, mass: 0.8 });
+
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      cursorX.set(e.clientX - 8);
+      cursorY.set(e.clientY - 8);
+      cursorXOuter.set(e.clientX - 24);
+      cursorYOuter.set(e.clientY - 24);
     };
-    
+
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (
-        target.tagName.toLowerCase() === 'a' || 
+        target.tagName.toLowerCase() === 'a' ||
         target.tagName.toLowerCase() === 'button' ||
         target.closest('a') ||
         target.closest('button') ||
@@ -413,24 +533,22 @@ function CustomCursor() {
       window.removeEventListener('mousemove', updateMousePosition);
       window.removeEventListener('mouseover', handleMouseOver);
     };
-  }, []);
+  }, [cursorX, cursorY, cursorXOuter, cursorYOuter]);
 
   return (
     <>
       <motion.div
         className="fixed top-0 left-0 w-4 h-4 bg-crimson rounded-full pointer-events-none z-[100] mix-blend-difference hidden md:block select-none"
+        style={{ x: springX, y: springY }}
         animate={{
-          x: mousePosition.x - 8,
-          y: mousePosition.y - 8,
           scale: isHovering ? 2.5 : 1,
         }}
         transition={{ type: "tween", ease: "backOut", duration: 0.15 }}
       />
       <motion.div
         className="fixed top-0 left-0 w-12 h-12 border-2 border-crimson rounded-full pointer-events-none z-[99] hidden md:block select-none"
+        style={{ x: springXOuter, y: springYOuter }}
         animate={{
-          x: mousePosition.x - 24,
-          y: mousePosition.y - 24,
           scale: isHovering ? 1.5 : 1,
           opacity: isHovering ? 0 : 0.6
         }}
@@ -458,7 +576,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
   }, [onComplete]);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ y: 0 }}
       exit={{ y: "-100%" }}
       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
@@ -471,7 +589,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
           <span className="font-display text-5xl tracking-wide uppercase text-white">Sniper</span>
         </div>
         <div className="h-1 w-full bg-gunmetal relative overflow-hidden mt-4">
-          <motion.div 
+          <motion.div
             className="absolute top-0 left-0 h-full bg-crimson"
             initial={{ width: "0%" }}
             animate={{ width: `${progress}%` }}
