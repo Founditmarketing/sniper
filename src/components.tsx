@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, MapPin, Phone, Clock,
-  ArrowRight, Instagram, Facebook, Youtube, Star, Quote, ChevronLeft, ChevronRight
+  ArrowRight, Instagram, Facebook, Star, Quote
 } from 'lucide-react';
 import { Hero } from './components/Hero';
 import type { Page } from './App';
@@ -419,9 +419,8 @@ function Footer({ onNavigate }: FooterProps) {
               Lake Charles' premier destination for high-performance off-road customization. We build rigs that command respect.
             </p>
             <div className="flex gap-4">
-              <a href="https://www.facebook.com/SniperOffRoad" target="_blank" rel="noopener noreferrer" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Facebook className="w-6 h-6" /></a>
-              <a href="#" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Instagram className="w-6 h-6" /></a>
-              <a href="#" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Youtube className="w-6 h-6" /></a>
+              <a href="https://www.facebook.com/sniperoffroad/" target="_blank" rel="noopener noreferrer" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Facebook className="w-6 h-6" /></a>
+              <a href="https://www.instagram.com/sniper_off_road/" target="_blank" rel="noopener noreferrer" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Instagram className="w-6 h-6" /></a>
             </div>
           </div>
 
@@ -459,10 +458,6 @@ function Footer({ onNavigate }: FooterProps) {
 
         <div className="border-t-2 border-gunmetal pt-8 flex flex-col md:flex-row justify-between items-center gap-6 font-sans text-sm font-bold tracking-widest uppercase text-gray-600">
           <p>&copy; {new Date().getFullYear()} Sniper Off Road. All rights reserved.</p>
-          <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-          </div>
         </div>
       </div>
     </footer>
