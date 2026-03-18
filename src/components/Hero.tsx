@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 
 const IMAGES = {
@@ -12,53 +12,32 @@ interface HeroProps {
 
 export function Hero({ onNavigate }: HeroProps) {
   const { scrollY } = useScroll();
-  const yBackgroundScroll = useTransform(scrollY, [0, 1000], [0, 400]);
-  const yTextScroll = useTransform(scrollY, [0, 1000], [0, 200]);
-  const opacityText = useTransform(scrollY, [0, 500], [0.2, 0]);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springConfig = { damping: 30, stiffness: 200, mass: 1 };
-  const mouseXSpring = useSpring(mouseX, springConfig);
-  const mouseYSpring = useSpring(mouseY, springConfig);
-
-  const xBackgroundParallax = useTransform(mouseXSpring, [-1, 1], [-20, 20]);
-  const yBackgroundParallax = useTransform(mouseYSpring, [-1, 1], [-20, 20]);
-
-  const xTextParallax = useTransform(mouseXSpring, [-1, 1], [30, -30]);
-  const yTextParallax = useTransform(mouseYSpring, [-1, 1], [30, -30]);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const x = (clientX / window.innerWidth) * 2 - 1;
-    const y = (clientY / window.innerHeight) * 2 - 1;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
+  const yBackgroundScroll = useTransform(scrollY, [0, 1000], [0, 300]);
+  const opacityText = useTransform(scrollY, [0, 500], [1, 0]);
+  const yTextScroll = useTransform(scrollY, [0, 600], [0, 120]);
 
   return (
-    <section onMouseMove={handleMouseMove} className="relative h-screen flex items-center justify-center overflow-hidden bg-ink">
-      {/* Massive Background Text with Parallax */}
-      <motion.div style={{ y: yTextScroll, opacity: opacityText }} className="absolute inset-0 z-0 pointer-events-none">
-        <motion.h1
-          style={{ x: xTextParallax, y: yTextParallax }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center font-display text-[25vw] leading-[0.75] uppercase text-stroke-thick pointer-events-none select-none whitespace-nowrap"
-        >
-          SNIPER
-        </motion.h1>
-      </motion.div>
+    <section className="relative h-screen flex items-center justify-center overflow-hidden bg-ink">
+      {/* Background watermark text — scroll parallax only */}
+      <motion.h1
+        style={{ y: yTextScroll, opacity: opacityText }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center font-display text-[25vw] leading-[0.75] uppercase text-stroke-thick pointer-events-none select-none whitespace-nowrap z-0"
+      >
+        SNIPER
+      </motion.h1>
 
+      {/* Parallax background image */}
       <motion.div
         style={{ y: yBackgroundScroll }}
         className="absolute inset-0 z-10 origin-top pointer-events-none"
       >
-        <motion.div style={{ x: xBackgroundParallax, y: yBackgroundParallax }} className="relative w-full h-[120%] -mt-[10%] origin-center">
-          <div className="absolute inset-0 bg-ink opacity-40 z-20 pointer-events-none"></div>
+        <div className="relative w-full h-[120%] -mt-[10%]">
+          <div className="absolute inset-0 bg-ink opacity-40 z-20 pointer-events-none" />
           <img src={IMAGES.hero} alt="Off-road truck in dust" className="w-full h-full object-cover scale-[1.05]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/40 to-transparent z-30 pointer-events-none"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent z-30 pointer-events-none"></div>
-          <div className="absolute inset-0 bg-noise opacity-[0.02] mix-blend-overlay z-40 pointer-events-none"></div>
-        </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/40 to-transparent z-30 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent z-30 pointer-events-none" />
+          <div className="absolute inset-0 bg-noise opacity-[0.02] mix-blend-overlay z-40 pointer-events-none" />
+        </div>
       </motion.div>
 
       <div className="relative z-20 max-w-7xl mx-auto px-6 w-full pt-20">
