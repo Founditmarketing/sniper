@@ -17,7 +17,6 @@ const GALLERY_IMAGES = [
   { src: "/images/real_services_3.png", title: "Project Lima", subtitle: "Full Custom Build" },
 ];
 
-const FILTERS = ["All Builds", "Trucks", "Jeeps", "Broncos", "Leveling"];
 
 interface GalleryPageProps {
   onNavigate: (page: string) => void;
@@ -25,7 +24,6 @@ interface GalleryPageProps {
 
 export function GalleryPage({ onNavigate }: GalleryPageProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [activeFilter, setActiveFilter] = useState("All Builds");
 
   return (
     <div className="min-h-screen bg-ink text-white">
@@ -44,21 +42,6 @@ export function GalleryPage({ onNavigate }: GalleryPageProps) {
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="font-sans text-gray-400 max-w-2xl text-xl font-medium leading-relaxed border-l-4 border-crimson pl-6">
             A full showcase of our most recent and most notable builds. Every rig tells a story.
           </motion.p>
-        </div>
-      </div>
-
-      {/* Filter Bar */}
-      <div className="border-b-2 border-gunmetal">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-wrap gap-6">
-          {FILTERS.map(filter => (
-            <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`font-sans font-black text-sm uppercase tracking-widest pb-2 transition-colors border-b-4 ${activeFilter === filter ? 'text-crimson border-crimson' : 'text-gray-500 border-transparent hover:text-white'}`}
-            >
-              {filter}
-            </button>
-          ))}
         </div>
       </div>
 

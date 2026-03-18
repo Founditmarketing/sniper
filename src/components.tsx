@@ -399,6 +399,42 @@ function Reviews() {
   );
 }
 
+function QuoteForm() {
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({ name: '', phone: '', vehicle: '', message: '' });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="border-2 border-crimson p-8 text-center">
+        <div className="font-display text-3xl text-crimson uppercase tracking-wide mb-2">Got It!</div>
+        <p className="text-gray-400 font-medium">We'll be in touch soon. Or call us now at <a href="tel:3372633717" className="text-white hover:text-crimson transition-colors">(337) 263-3717</a>.</p>
+      </div>
+    );
+  }
+
+  const inputClass = "w-full bg-gunmetal border-2 border-white/10 focus:border-crimson outline-none px-4 py-3 text-white font-sans font-medium placeholder-gray-600 transition-colors";
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input required name="name" value={form.name} onChange={handleChange} placeholder="Your Name" className={inputClass} />
+      <input required name="phone" value={form.phone} onChange={handleChange} placeholder="Phone Number" className={inputClass} />
+      <input name="vehicle" value={form.vehicle} onChange={handleChange} placeholder="Your Vehicle (e.g. 2022 F-250)" className={inputClass} />
+      <textarea name="message" value={form.message} onChange={handleChange} placeholder="What are you looking to do?" rows={3} className={`${inputClass} resize-none`} />
+      <button type="submit" className="w-full bg-crimson hover:bg-white hover:text-ink text-white py-4 font-display text-xl tracking-widest uppercase transition-all skew-x-[-6deg]">
+        <span className="inline-block skew-x-[6deg]">Send Request</span>
+      </button>
+    </form>
+  );
+}
+
 interface FooterProps {
   onNavigate: (page: string) => void;
 }
@@ -442,16 +478,9 @@ function Footer({ onNavigate }: FooterProps) {
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-display text-3xl uppercase tracking-widest mb-8 text-white">Navigate</h4>
-            <ul className="space-y-4 font-sans font-black text-sm uppercase tracking-widest">
-              {[['Services', 'services'], ['About Us', 'about'], ['Gallery', 'gallery']].map(([label, pg]) => (
-                <li key={pg}>
-                  <button onClick={() => onNavigate(pg)} className="text-gray-400 hover:text-crimson transition-colors">{label}</button>
-                </li>
-              ))}
-              <li><a href="tel:3372633717" className="text-gray-400 hover:text-crimson transition-colors">Contact</a></li>
-            </ul>
+          <div className="lg:col-span-1">
+            <h4 className="font-display text-3xl uppercase tracking-widest mb-8 text-white">Get a Quote</h4>
+            <QuoteForm />
           </div>
 
         </div>
