@@ -482,26 +482,26 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
           transform: rotate(90deg);
           animation: drawCircle 1.4s cubic-bezier(0.33,1,0.68,1) 0.2s forwards;
         }
-        /* Each line has dasharray 36 (its full length) */
+        /* Each line runs from outer tip (10px from edge) through circle to near center dot (8px gap) = 82px */
         .sniper-line-top {
-          stroke-dasharray: 36;
-          stroke-dashoffset: 36;
-          animation: slideInTop 0.3s ease-out 1.7s forwards;
+          stroke-dasharray: 82;
+          stroke-dashoffset: 82;
+          animation: slideInTop 0.35s ease-out 1.7s forwards;
         }
         .sniper-line-right {
-          stroke-dasharray: 36;
-          stroke-dashoffset: 36;
-          animation: slideInRight 0.3s ease-out 2.05s forwards;
+          stroke-dasharray: 82;
+          stroke-dashoffset: 82;
+          animation: slideInRight 0.35s ease-out 2.05s forwards;
         }
         .sniper-line-bottom {
-          stroke-dasharray: 36;
-          stroke-dashoffset: 36;
-          animation: slideInBottom 0.3s ease-out 2.4s forwards;
+          stroke-dasharray: 82;
+          stroke-dashoffset: 82;
+          animation: slideInBottom 0.35s ease-out 2.4s forwards;
         }
         .sniper-line-left {
-          stroke-dasharray: 36;
-          stroke-dashoffset: 36;
-          animation: slideInLeft 0.3s ease-out 2.75s forwards;
+          stroke-dasharray: 82;
+          stroke-dashoffset: 82;
+          animation: slideInLeft 0.35s ease-out 2.75s forwards;
         }
       `}</style>
 
@@ -523,32 +523,31 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
             strokeLinecap="round"
           />
 
-          {/* Top line: from inner edge (y=34) up toward center gap edge (y=34), slides from y=0 inward */}
-          {/* Line goes from (100, 18) to (100, 34) — top outer to just outside circle gap */}
+          {/* Top line: slides from outer tip (y=10) down through circle to just above center dot (y=92) */}
           <line
             className="sniper-line-top"
-            x1="100" y1="18" x2="100" y2="34"
+            x1="100" y1="10" x2="100" y2="92"
             stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
           />
 
-          {/* Right line: slides from outer tip (182) leftward to circle edge (166) */}
+          {/* Right line: slides from outer tip (x=190) leftward through circle to just right of center dot (x=108) */}
           <line
             className="sniper-line-right"
-            x1="182" y1="100" x2="166" y2="100"
+            x1="190" y1="100" x2="108" y2="100"
             stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
           />
 
-          {/* Bottom line: slides from outer tip (182) upward to circle edge (166) */}
+          {/* Bottom line: slides from outer tip (y=190) upward through circle to just below center dot (y=108) */}
           <line
             className="sniper-line-bottom"
-            x1="100" y1="182" x2="100" y2="166"
+            x1="100" y1="190" x2="100" y2="108"
             stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
           />
 
-          {/* Left line: from (18, 100) to (34, 100) */}
+          {/* Left line: slides from outer tip (x=10) rightward through circle to just left of center dot (x=92) */}
           <line
             className="sniper-line-left"
-            x1="18" y1="100" x2="34" y2="100"
+            x1="10" y1="100" x2="92" y2="100"
             stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
           />
         </svg>
