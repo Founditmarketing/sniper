@@ -458,19 +458,19 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
         }
         /* Lines slide in from their outside edge */
         @keyframes slideInTop {
-          from { stroke-dashoffset: 36; }
+          from { stroke-dashoffset: 62; }
           to   { stroke-dashoffset: 0; }
         }
         @keyframes slideInRight {
-          from { stroke-dashoffset: 36; }
+          from { stroke-dashoffset: 62; }
           to   { stroke-dashoffset: 0; }
         }
         @keyframes slideInBottom {
-          from { stroke-dashoffset: 36; }
+          from { stroke-dashoffset: 62; }
           to   { stroke-dashoffset: 0; }
         }
         @keyframes slideInLeft {
-          from { stroke-dashoffset: 36; }
+          from { stroke-dashoffset: 62; }
           to   { stroke-dashoffset: 0; }
         }
 
