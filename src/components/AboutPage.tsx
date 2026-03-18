@@ -17,12 +17,13 @@ const VALUES = [
 ];
 
 const REVIEWS = [
-  { name: "Mike T.", vehicle: "2023 F-250 Tremor", text: "Sniper Off Road absolutely nailed the stance on my Tremor. The attention to detail on the suspension geometry is next level. Drives better than stock." },
-  { name: "Sarah J.", vehicle: "Jeep Wrangler JL", text: "Took my stock JL in for a complete overhaul. Lift, tires, bumpers, winch. They communicated every step of the way and the final product is a beast on the trails." },
-  { name: "David R.", vehicle: "Chevy Silverado 1500", text: "Best shop in Lake Charles hands down. They don't cut corners. If you want it done right the first time, bring it to Sniper." },
-  { name: "James L.", vehicle: "Toyota Tacoma TRD Pro", text: "Called for advice on leveling my Taco. They were super honest, didn't try to upsell me, and the installation was flawless." },
-  { name: "Chris B.", vehicle: "Ford Bronco Badlands", text: "What an amazing experience. They turned my fairly stock Bronco into a complete trail beast. The new wheels and tires are perfect." },
+  { name: "J P", vehicle: "3 months ago", text: "Great service! Very knowledgeable. Highly recommend." },
+  { name: "Safety Station", vehicle: "Cameron, LA · 2 months ago", text: "Friendly, knowledgeable, and most importantly, the quality of their work is amazing!" },
+  { name: "Ryan Arendt", vehicle: "5 years ago", text: "Amazing people who know their business. Had a chameleon cerakote and new tires. Great price — tire was $650, normally $800. Chameleon blue cerakote, all together for $1,500 plus tax. Fantastic results!" },
+  { name: "Zac Young", vehicle: "3 years ago", text: "Very knowledgeable and honest. Super professional and extremely well-mannered. Only place I trust for servicing oversized tires and aftermarket rims. Highly recommend!" },
+  { name: "Richard Baggett", vehicle: "10 months ago", text: "I installed a 2\" lift kit on a Jeep and wanted more. They were more than fair on trade-in. Great work!" },
 ];
+
 
 interface AboutPageProps {
   onNavigate: (page: string) => void;
