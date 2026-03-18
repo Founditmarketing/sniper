@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useTransform } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, MapPin, Phone, Clock,
-  ArrowRight, Crosshair, Instagram, Facebook, Youtube, Star, Quote, ChevronLeft, ChevronRight
+  ArrowRight, Instagram, Facebook, Youtube, Star, Quote, ChevronLeft, ChevronRight
 } from 'lucide-react';
-import { Magnetic } from './components/Magnetic';
 import { Hero } from './components/Hero';
+import type { Page } from './App';
 
 const IMAGES = {
   hero: "/images/real_gallery_1.jpg",
@@ -28,7 +28,12 @@ const IMAGES = {
   ]
 };
 
-function Navbar() {
+interface NavbarProps {
+  currentPage: Page;
+  onNavigate: (page: string) => void;
+}
+
+function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -38,27 +43,48 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navLinks = [
+    { label: 'Services', page: 'services' },
+    { label: 'About', page: 'about' },
+    { label: 'Gallery', page: 'gallery' },
+    { label: 'Reviews', page: 'home', hash: '#reviews' },
+  ];
+
+  const handleNav = (page: string, hash?: string) => {
+    setMobileMenuOpen(false);
+    if (hash && page === 'home') {
+      onNavigate('home');
+      setTimeout(() => {
+        document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      onNavigate(page);
+    }
+  };
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-ink/95 backdrop-blur-md py-4 shadow-lg shadow-black/50 border-b border-white/5' : 'bg-transparent py-6'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-ink/95 backdrop-blur-md py-3 shadow-lg shadow-black/50 border-b border-white/5' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Crosshair className="w-8 h-8 text-crimson" />
-          <span className="font-display text-3xl tracking-wide uppercase mt-1">Sniper <span className="text-crimson">Off Road</span></span>
-        </div>
+        <button onClick={() => onNavigate('home')} className="flex items-center gap-2 focus:outline-none">
+          <img src="/favicon.png" alt="Sniper Off Road" className="h-14 w-auto object-contain drop-shadow-lg" />
+        </button>
 
         <nav className="hidden md:flex items-center gap-4 font-sans font-bold text-sm uppercase tracking-widest">
-          <Magnetic strength={10}><a href="#services" className="px-4 py-2 hover:text-crimson transition-colors inline-block">Services</a></Magnetic>
-          <Magnetic strength={10}><a href="#about" className="px-4 py-2 hover:text-crimson transition-colors inline-block">About</a></Magnetic>
-          <Magnetic strength={10}><a href="#gallery" className="px-4 py-2 hover:text-crimson transition-colors inline-block">Gallery</a></Magnetic>
-          <Magnetic strength={10}><a href="#reviews" className="px-4 py-2 hover:text-crimson transition-colors inline-block">Reviews</a></Magnetic>
+          {navLinks.map(({ label, page, hash }) => (
+            <button
+              key={label}
+              onClick={() => handleNav(page, hash)}
+              className={`px-4 py-2 transition-colors ${currentPage === page ? 'text-crimson' : 'hover:text-crimson'}`}
+            >
+              {label}
+            </button>
+          ))}
         </nav>
 
         <div className="hidden md:block">
-          <Magnetic>
-            <a href="#contact" className="bg-crimson hover:bg-white hover:text-ink text-white px-8 py-3 font-display text-xl tracking-wider uppercase transition-all transform skew-x-[-10deg] inline-block">
-              <div className="skew-x-[10deg]">Get a Quote</div>
-            </a>
-          </Magnetic>
+          <a href="#contact" onClick={() => onNavigate('home')} className="bg-crimson hover:bg-white hover:text-ink text-white px-8 py-3 font-display text-xl tracking-wider uppercase transition-all transform skew-x-[-10deg] inline-block">
+            <div className="skew-x-[10deg]">Get a Quote</div>
+          </a>
         </div>
 
         <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -75,12 +101,17 @@ function Navbar() {
             transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
             className="fixed inset-0 z-40 bg-ink/95 backdrop-blur-xl flex flex-col justify-center items-center gap-8 md:hidden"
           >
-            <a href="#services" onClick={() => setMobileMenuOpen(false)} className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors">Services</a>
-            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors">About</a>
-            <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors">Gallery</a>
-            <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors">Reviews</a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="bg-crimson text-white px-12 py-5 font-display text-3xl uppercase tracking-wider mt-12 skew-x-[-10deg]">
-              <div className="skew-x-[10deg]">Get a Quote</div>
+            {navLinks.map(({ label, page, hash }) => (
+              <button
+                key={label}
+                onClick={() => handleNav(page, hash)}
+                className="font-display text-5xl sm:text-6xl uppercase tracking-wider hover:text-crimson transition-colors"
+              >
+                {label}
+              </button>
+            ))}
+            <a href="tel:3372633717" onClick={() => setMobileMenuOpen(false)} className="bg-crimson text-white px-12 py-5 font-display text-3xl uppercase tracking-wider mt-12 skew-x-[-10deg]">
+              <div className="skew-x-[10deg]">(337) 263-3717</div>
             </a>
           </motion.div>
         )}
@@ -91,7 +122,11 @@ function Navbar() {
 
 
 
-function Services() {
+interface SectionProps {
+  onNavigate: (page: string) => void;
+}
+
+function Services({ onNavigate }: SectionProps) {
   const services = [
     { title: "Lift Kits", desc: "Raise the height of your vehicle's suspension. Clear greater ground and fit larger tires!", image: IMAGES.services[0] },
     { title: "Leveling Kits", desc: "Modify the front end of your vehicle by raising it for a more balanced and level stance!", image: IMAGES.services[1] },
@@ -129,21 +164,30 @@ function Services() {
                   <span className="font-display text-2xl text-ink/40 group-hover:text-ink/10">0{idx + 1}</span>
                 </div>
                 <p className="font-sans text-gray-400 text-sm font-medium leading-relaxed mb-6">{service.desc}</p>
-                <Magnetic strength={10}>
-                  <a href="tel:3372633717" className="inline-flex items-center gap-2 text-crimson hover:text-white font-sans font-black text-xs uppercase tracking-widest transition-colors">
-                    Call For More Info <ArrowRight className="w-4 h-4" />
-                  </a>
-                </Magnetic>
+                <a href="tel:3372633717" className="inline-flex items-center gap-2 text-crimson hover:text-white font-sans font-black text-xs uppercase tracking-widest transition-colors">
+                  Call For More Info <ArrowRight className="w-4 h-4" />
+                </a>
               </div>
             </motion.div>
           ))}
+        </div>
+
+        <div className="mt-16 text-center">
+          <button
+            onClick={() => onNavigate('services')}
+            className="bg-transparent border-4 border-white hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block"
+          >
+            <div className="skew-x-[10deg] flex items-center gap-3">
+              View All Services <ArrowRight className="w-6 h-6" />
+            </div>
+          </button>
         </div>
       </div>
     </section>
   );
 }
 
-function About() {
+function About({ onNavigate }: SectionProps) {
   return (
     <section id="about" className="py-32 bg-ink relative overflow-hidden">
       {/* Massive Background Text */}
@@ -186,15 +230,24 @@ function About() {
 
             <div className="space-y-6 font-sans text-gray-300 text-lg leading-relaxed font-medium">
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }}>
-                Sniper Off Road is an automotive customization shop located at 510 S Martin Luther King Hwy in Lake Charles, Louisiana. The shop is known for providing high-quality work and excellent customer service. We have received positive reviews from customers, highlighting the professionalism and expertise of our team.
+                Sniper Off Road is an automotive customization shop located at 510 S Martin Luther King Hwy in Lake Charles, Louisiana. The shop is known for providing high-quality work and excellent customer service.
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.6 }}>
                 For more details or to inquire about our services, you can contact us at (337) 263-3717. Our operating hours are Monday to Friday from 9:00 AM to 5:00 PM (Closed Weekends).
               </motion.p>
             </div>
 
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.8 }} className="mt-10">
+              <button
+                onClick={() => onNavigate('about')}
+                className="inline-flex items-center gap-3 bg-crimson hover:bg-white hover:text-ink text-white px-8 py-4 font-display text-xl tracking-widest uppercase transition-all skew-x-[-10deg]"
+              >
+                <div className="skew-x-[10deg] flex items-center gap-3">Full About Us <ArrowRight className="w-5 h-5" /></div>
+              </button>
+            </motion.div>
+
             <motion.div
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.8 }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.9 }}
               className="grid grid-cols-2 gap-8 mt-12 pt-8 border-t-2 border-gunmetal"
             >
               <div>
@@ -213,7 +266,7 @@ function About() {
   );
 }
 
-function Gallery() {
+function Gallery({ onNavigate }: SectionProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
@@ -224,12 +277,6 @@ function Gallery() {
             <div>
               <h2 className="font-display text-6xl md:text-8xl uppercase tracking-tight mb-4 text-stroke-thick opacity-80">Confirmed <span className="text-crimson text-stroke-none opacity-100">Kills</span></h2>
               <p className="font-sans text-gray-400 text-xl font-medium">A showcase of our most recent builds.</p>
-            </div>
-            <div className="flex flex-wrap gap-4 font-sans font-black text-xs sm:text-sm uppercase tracking-widest mt-6 md:mt-0">
-              <button className="text-crimson border-b-4 border-crimson pb-2">All Builds</button>
-              <button className="text-gray-500 hover:text-white transition-colors pb-2">Trucks</button>
-              <button className="text-gray-500 hover:text-white transition-colors pb-2">Jeeps</button>
-              <button className="text-gray-500 hover:text-white transition-colors pb-2">Broncos</button>
             </div>
           </div>
 
@@ -256,13 +303,14 @@ function Gallery() {
           </div>
 
           <div className="mt-16 text-center">
-            <Magnetic>
-              <a href="#" className="bg-transparent border-4 border-white hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block">
-                <div className="skew-x-[10deg] flex items-center gap-3">
-                  View Full Gallery <ArrowRight className="w-6 h-6" />
-                </div>
-              </a>
-            </Magnetic>
+            <button
+              onClick={() => onNavigate('gallery')}
+              className="bg-transparent border-4 border-white hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block"
+            >
+              <div className="skew-x-[10deg] flex items-center gap-3">
+                View Full Gallery <ArrowRight className="w-6 h-6" />
+              </div>
+            </button>
           </div>
         </div>
       </section>
@@ -321,13 +369,9 @@ function Reviews() {
         <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-ink to-transparent z-10 pointer-events-none"></div>
 
         <div className="flex animate-marquee group-hover:[animation-play-state:paused]" style={{ width: 'max-content', animationDuration: '40s' }}>
-          {/* First Half */}
           <div className="flex gap-10 px-5">
             {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="bg-gunmetal p-10 relative border-l-8 border-crimson hover:bg-white hover:text-ink transition-colors duration-500 group w-[350px] md:w-[450px] shrink-0"
-              >
+              <div key={idx} className="bg-gunmetal p-10 relative border-l-8 border-crimson hover:bg-white hover:text-ink transition-colors duration-500 group w-[350px] md:w-[450px] shrink-0">
                 <Quote className="absolute top-6 right-6 w-16 h-16 text-white/5 group-hover:text-ink/5 transition-colors" />
                 <p className="font-sans text-lg md:text-xl font-medium italic mb-8 relative z-10 leading-relaxed text-gray-300 group-hover:text-ink/80 transition-colors">"{review.text}"</p>
                 <div>
@@ -337,13 +381,9 @@ function Reviews() {
               </div>
             ))}
           </div>
-          {/* Second Half (Exact Duplicate) */}
           <div className="flex gap-10 px-5">
             {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="bg-gunmetal p-10 relative border-l-8 border-crimson hover:bg-white hover:text-ink transition-colors duration-500 group w-[350px] md:w-[450px] shrink-0"
-              >
+              <div key={idx} className="bg-gunmetal p-10 relative border-l-8 border-crimson hover:bg-white hover:text-ink transition-colors duration-500 group w-[350px] md:w-[450px] shrink-0">
                 <Quote className="absolute top-6 right-6 w-16 h-16 text-white/5 group-hover:text-ink/5 transition-colors" />
                 <p className="font-sans text-lg md:text-xl font-medium italic mb-8 relative z-10 leading-relaxed text-gray-300 group-hover:text-ink/80 transition-colors">"{review.text}"</p>
                 <div>
@@ -359,7 +399,11 @@ function Reviews() {
   );
 }
 
-function Footer() {
+interface FooterProps {
+  onNavigate: (page: string) => void;
+}
+
+function Footer({ onNavigate }: FooterProps) {
   return (
     <footer id="contact" className="bg-ink border-t-8 border-crimson pt-24 pb-12 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-crimson/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -369,15 +413,14 @@ function Footer() {
 
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-8">
-              <Crosshair className="w-12 h-12 text-crimson" />
-              <span className="font-display text-5xl tracking-wide uppercase mt-1">Sniper <span className="text-crimson">Off Road</span></span>
+              <img src="/favicon.png" alt="Sniper Off Road" className="h-16 w-auto object-contain drop-shadow-lg" />
             </div>
             <p className="font-sans text-gray-400 max-w-md mb-10 text-xl font-medium leading-relaxed">
               Lake Charles' premier destination for high-performance off-road customization. We build rigs that command respect.
             </p>
             <div className="flex gap-4">
+              <a href="https://www.facebook.com/SniperOffRoad" target="_blank" rel="noopener noreferrer" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Facebook className="w-6 h-6" /></a>
               <a href="#" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Instagram className="w-6 h-6" /></a>
-              <a href="#" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Facebook className="w-6 h-6" /></a>
               <a href="#" className="w-14 h-14 bg-gunmetal flex items-center justify-center hover:bg-crimson hover:text-white transition-colors"><Youtube className="w-6 h-6" /></a>
             </div>
           </div>
@@ -393,10 +436,6 @@ function Footer() {
                 <Phone className="w-6 h-6 text-crimson shrink-0" />
                 <a href="tel:3372633717" className="text-xl text-white font-bold hover:text-crimson transition-colors">(337) 263-3717</a>
               </li>
-              <li className="flex items-center gap-4 font-bold">
-                <span className="text-crimson shrink-0 text-2xl leading-none">@</span>
-                <a href="mailto:robbiesutphin@yahoo.com" className="text-white hover:text-crimson transition-colors">robbiesutphin@yahoo.com</a>
-              </li>
               <li className="flex items-start gap-4">
                 <Clock className="w-6 h-6 text-crimson shrink-0 mt-1" />
                 <span>Mon - Fri: 9:00 AM - 5:00 PM<br />Sat & Sun: Closed</span>
@@ -405,13 +444,15 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="font-display text-3xl uppercase tracking-widest mb-8 text-white">Ready to Build?</h4>
-            <p className="font-sans text-gray-400 mb-8 font-medium">Contact us today to discuss your vision and get a quote.</p>
-            <Magnetic>
-              <a href="#" className="bg-crimson hover:bg-white hover:text-ink text-white px-8 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block w-full text-center">
-                <div className="skew-x-[10deg]">Book Your Build</div>
-              </a>
-            </Magnetic>
+            <h4 className="font-display text-3xl uppercase tracking-widest mb-8 text-white">Navigate</h4>
+            <ul className="space-y-4 font-sans font-black text-sm uppercase tracking-widest">
+              {[['Services', 'services'], ['About Us', 'about'], ['Gallery', 'gallery']].map(([label, pg]) => (
+                <li key={pg}>
+                  <button onClick={() => onNavigate(pg)} className="text-gray-400 hover:text-crimson transition-colors">{label}</button>
+                </li>
+              ))}
+              <li><a href="tel:3372633717" className="text-gray-400 hover:text-crimson transition-colors">Contact</a></li>
+            </ul>
           </div>
 
         </div>
@@ -429,19 +470,14 @@ function Footer() {
 }
 
 
-
 function Preloader({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
-    // Total animation: circle ~1.4s + 4 lines ~1.6s + hold ~0.4s = ~3.4s then exit
     const timer = setTimeout(onComplete, 3800);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
-  // SVG viewport: 200x200, center at 100,100, radius 60
-  // Circle circumference = 2 * PI * 60 ≈ 376.99
-  // Start from bottom (270deg) going clockwise means rotate(-90deg) with dashoffset trick
   const R = 60;
-  const C = 2 * Math.PI * R; // 376.99
+  const C = 2 * Math.PI * R;
 
   return (
     <motion.div
@@ -451,108 +487,37 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
       className="fixed inset-0 z-[200] bg-ink flex flex-col items-center justify-center overflow-hidden"
     >
       <style>{`
-        /* Circle: draws from bottom clockwise */
         @keyframes drawCircle {
           from { stroke-dashoffset: ${C}; }
           to   { stroke-dashoffset: 0; }
         }
-        /* Lines slide in from their outside edge */
-        @keyframes slideInTop {
-          from { stroke-dashoffset: 62; }
-          to   { stroke-dashoffset: 0; }
-        }
-        @keyframes slideInRight {
-          from { stroke-dashoffset: 62; }
-          to   { stroke-dashoffset: 0; }
-        }
-        @keyframes slideInBottom {
-          from { stroke-dashoffset: 62; }
-          to   { stroke-dashoffset: 0; }
-        }
-        @keyframes slideInLeft {
-          from { stroke-dashoffset: 62; }
-          to   { stroke-dashoffset: 0; }
-        }
+        @keyframes slideInTop    { from { stroke-dashoffset: 62; } to { stroke-dashoffset: 0; } }
+        @keyframes slideInRight  { from { stroke-dashoffset: 62; } to { stroke-dashoffset: 0; } }
+        @keyframes slideInBottom { from { stroke-dashoffset: 62; } to { stroke-dashoffset: 0; } }
+        @keyframes slideInLeft   { from { stroke-dashoffset: 62; } to { stroke-dashoffset: 0; } }
 
         .sniper-circle {
           stroke-dasharray: ${C};
           stroke-dashoffset: ${C};
-          /* rotate so stroke-start = bottom (270deg) going clockwise */
           transform-origin: 100px 100px;
           transform: rotate(90deg);
           animation: drawCircle 1.4s cubic-bezier(0.33,1,0.68,1) 0.2s forwards;
         }
-        /* Each line: 22px outside circle + cross circle + 20px gap from dot = 62px total */
-        .sniper-line-top {
-          stroke-dasharray: 62;
-          stroke-dashoffset: 62;
-          animation: slideInTop 0.35s ease-out 1.7s forwards;
-        }
-        .sniper-line-right {
-          stroke-dasharray: 62;
-          stroke-dashoffset: 62;
-          animation: slideInRight 0.35s ease-out 2.05s forwards;
-        }
-        .sniper-line-bottom {
-          stroke-dasharray: 62;
-          stroke-dashoffset: 62;
-          animation: slideInBottom 0.35s ease-out 2.4s forwards;
-        }
-        .sniper-line-left {
-          stroke-dasharray: 62;
-          stroke-dashoffset: 62;
-          animation: slideInLeft 0.35s ease-out 2.75s forwards;
-        }
+        .sniper-line-top    { stroke-dasharray: 62; stroke-dashoffset: 62; animation: slideInTop    0.35s ease-out 1.7s  forwards; }
+        .sniper-line-right  { stroke-dasharray: 62; stroke-dashoffset: 62; animation: slideInRight  0.35s ease-out 2.05s forwards; }
+        .sniper-line-bottom { stroke-dasharray: 62; stroke-dashoffset: 62; animation: slideInBottom 0.35s ease-out 2.4s  forwards; }
+        .sniper-line-left   { stroke-dasharray: 62; stroke-dashoffset: 62; animation: slideInLeft   0.35s ease-out 2.75s forwards; }
       `}</style>
 
       <div className="flex flex-col items-center gap-10">
-        {/* Crosshair SVG */}
         <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Center dot */}
           <circle cx="100" cy="100" r="5" fill="#e11d48" />
-
-          {/* Animated circle — starts drawing from bottom, goes clockwise */}
-          <circle
-            className="sniper-circle"
-            cx="100"
-            cy="100"
-            r={R}
-            stroke="#e11d48"
-            strokeWidth="2.5"
-            fill="none"
-            strokeLinecap="round"
-          />
-
-          {/* Top: tip at y=18 (22px outside circle top at y=40), stops at y=80 (20px from center) */}
-          <line
-            className="sniper-line-top"
-            x1="100" y1="18" x2="100" y2="80"
-            stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
-          />
-
-          {/* Right: tip at x=182 (22px outside circle right at x=160), stops at x=120 (20px from center) */}
-          <line
-            className="sniper-line-right"
-            x1="182" y1="100" x2="120" y2="100"
-            stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
-          />
-
-          {/* Bottom: tip at y=182 (22px outside circle bottom at y=160), stops at y=120 (20px from center) */}
-          <line
-            className="sniper-line-bottom"
-            x1="100" y1="182" x2="100" y2="120"
-            stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
-          />
-
-          {/* Left: tip at x=18 (22px outside circle left at x=40), stops at x=80 (20px from center) */}
-          <line
-            className="sniper-line-left"
-            x1="18" y1="100" x2="80" y2="100"
-            stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
-          />
+          <circle className="sniper-circle" cx="100" cy="100" r={R} stroke="#e11d48" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          <line className="sniper-line-top"    x1="100" y1="18"  x2="100" y2="80"  stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round" />
+          <line className="sniper-line-right"  x1="182" y1="100" x2="120" y2="100" stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round" />
+          <line className="sniper-line-bottom" x1="100" y1="182" x2="100" y2="120" stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round" />
+          <line className="sniper-line-left"   x1="18"  y1="100" x2="80"  y2="100" stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round" />
         </svg>
-
-        {/* Brand text */}
         <div className="flex items-center gap-3">
           <span className="font-display text-4xl tracking-widest uppercase text-white">
             Sniper <span style={{ color: '#e11d48' }}>Off Road</span>

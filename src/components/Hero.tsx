@@ -1,13 +1,16 @@
 import React from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
-import { Magnetic } from './Magnetic';
 
 const IMAGES = {
   hero: "/images/real_gallery_1.jpg"
 };
 
-export function Hero() {
+interface HeroProps {
+  onNavigate: (page: string) => void;
+}
+
+export function Hero({ onNavigate }: HeroProps) {
   const { scrollY } = useScroll();
   const yBackgroundScroll = useTransform(scrollY, [0, 1000], [0, 400]);
   const yTextScroll = useTransform(scrollY, [0, 1000], [0, 200]);
@@ -32,8 +35,6 @@ export function Hero() {
     mouseX.set(x);
     mouseY.set(y);
   };
-
-  const titleWords = ["Built", "Different"];
 
   return (
     <section onMouseMove={handleMouseMove} className="relative h-screen flex items-center justify-center overflow-hidden bg-ink">
@@ -110,13 +111,14 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-wrap gap-6"
           >
-            <Magnetic>
-              <a href="#contact" className="bg-crimson hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block hover:scale-[1.02] active:scale-[0.98]">
-                <div className="skew-x-[10deg] flex items-center gap-3">
-                  Book Your Build <ArrowRight className="w-6 h-6" />
-                </div>
-              </a>
-            </Magnetic>
+            <a
+              href="#contact"
+              className="bg-crimson hover:bg-white hover:text-ink text-white px-10 py-5 font-display text-2xl tracking-widest uppercase transition-all skew-x-[-10deg] inline-block hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <div className="skew-x-[10deg] flex items-center gap-3">
+                Book Your Build <ArrowRight className="w-6 h-6" />
+              </div>
+            </a>
           </motion.div>
         </div>
       </div>
@@ -132,4 +134,3 @@ export function Hero() {
     </section>
   );
 }
-
