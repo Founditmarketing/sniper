@@ -94,7 +94,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-display text-5xl md:text-7xl uppercase tracking-tight mb-16 text-center">
             Why <span className="text-crimson">Choose Us?</span>
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {VALUES.map(({ icon: Icon, title, desc }, idx) => (
               <motion.div key={idx} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.1 }} className="group p-8 border-2 border-white/10 hover:border-crimson transition-colors duration-500">
                 <Icon className="w-10 h-10 text-crimson mb-6" />
