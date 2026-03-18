@@ -431,46 +431,133 @@ function Footer() {
 
 
 function Preloader({ onComplete }: { onComplete: () => void }) {
-  const [progress, setProgress] = useState(0);
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress(p => {
-        if (p >= 100) {
-          clearInterval(timer);
-          setTimeout(onComplete, 800);
-          return 100;
-        }
-        return p + Math.floor(Math.random() * 15) + 5;
-      });
-    }, 100);
-    return () => clearInterval(timer);
+    // Total animation: circle ~1.4s + 4 lines ~1.6s + hold ~0.4s = ~3.4s then exit
+    const timer = setTimeout(onComplete, 3800);
+    return () => clearTimeout(timer);
   }, [onComplete]);
+
+  // SVG viewport: 200x200, center at 100,100, radius 60
+  // Circle circumference = 2 * PI * 60 ≈ 376.99
+  // Start from bottom (270deg) going clockwise means rotate(-90deg) with dashoffset trick
+  const R = 60;
+  const C = 2 * Math.PI * R; // 376.99
 
   return (
     <motion.div
-      initial={{ y: 0 }}
-      exit={{ y: "-100%" }}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
       className="fixed inset-0 z-[200] bg-ink flex flex-col items-center justify-center overflow-hidden"
     >
-      <div className="absolute inset-0 bg-brushed-metal opacity-20" />
-      <div className="relative z-10 w-full max-w-sm px-6">
-        <div className="flex items-center gap-3 justify-center mb-8">
-          <Crosshair className="w-12 h-12 text-crimson animate-pulse" />
-          <span className="font-display text-5xl tracking-wide uppercase text-white">Sniper</span>
-        </div>
-        <div className="h-1 w-full bg-gunmetal relative overflow-hidden mt-4">
-          <motion.div
-            className="absolute top-0 left-0 h-full bg-crimson"
-            initial={{ width: "0%" }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.2 }}
+      <style>{`
+        /* Circle: draws from bottom clockwise */
+        @keyframes drawCircle {
+          from { stroke-dashoffset: ${C}; }
+          to   { stroke-dashoffset: 0; }
+        }
+        /* Lines slide in from their outside edge */
+        @keyframes slideInTop {
+          from { stroke-dashoffset: 36; }
+          to   { stroke-dashoffset: 0; }
+        }
+        @keyframes slideInRight {
+          from { stroke-dashoffset: 36; }
+          to   { stroke-dashoffset: 0; }
+        }
+        @keyframes slideInBottom {
+          from { stroke-dashoffset: 36; }
+          to   { stroke-dashoffset: 0; }
+        }
+        @keyframes slideInLeft {
+          from { stroke-dashoffset: 36; }
+          to   { stroke-dashoffset: 0; }
+        }
+
+        .sniper-circle {
+          stroke-dasharray: ${C};
+          stroke-dashoffset: ${C};
+          /* rotate so stroke-start = bottom (270deg) going clockwise */
+          transform-origin: 100px 100px;
+          transform: rotate(90deg);
+          animation: drawCircle 1.4s cubic-bezier(0.33,1,0.68,1) 0.2s forwards;
+        }
+        /* Each line has dasharray 36 (its full length) */
+        .sniper-line-top {
+          stroke-dasharray: 36;
+          stroke-dashoffset: 36;
+          animation: slideInTop 0.3s ease-out 1.7s forwards;
+        }
+        .sniper-line-right {
+          stroke-dasharray: 36;
+          stroke-dashoffset: 36;
+          animation: slideInRight 0.3s ease-out 2.05s forwards;
+        }
+        .sniper-line-bottom {
+          stroke-dasharray: 36;
+          stroke-dashoffset: 36;
+          animation: slideInBottom 0.3s ease-out 2.4s forwards;
+        }
+        .sniper-line-left {
+          stroke-dasharray: 36;
+          stroke-dashoffset: 36;
+          animation: slideInLeft 0.3s ease-out 2.75s forwards;
+        }
+      `}</style>
+
+      <div className="flex flex-col items-center gap-10">
+        {/* Crosshair SVG */}
+        <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Center dot */}
+          <circle cx="100" cy="100" r="5" fill="#e11d48" />
+
+          {/* Animated circle — starts drawing from bottom, goes clockwise */}
+          <circle
+            className="sniper-circle"
+            cx="100"
+            cy="100"
+            r={R}
+            stroke="#e11d48"
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
           />
-        </div>
-        <div className="mt-4 flex justify-between font-sans text-sm font-black uppercase tracking-widest text-crimson">
-          <span>Ignition Sequence</span>
-          <span>{Math.min(progress, 100)}%</span>
+
+          {/* Top line: from inner edge (y=34) up toward center gap edge (y=34), slides from y=0 inward */}
+          {/* Line goes from (100, 18) to (100, 34) — top outer to just outside circle gap */}
+          <line
+            className="sniper-line-top"
+            x1="100" y1="18" x2="100" y2="34"
+            stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
+          />
+
+          {/* Right line: slides from outer tip (182) leftward to circle edge (166) */}
+          <line
+            className="sniper-line-right"
+            x1="182" y1="100" x2="166" y2="100"
+            stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
+          />
+
+          {/* Bottom line: slides from outer tip (182) upward to circle edge (166) */}
+          <line
+            className="sniper-line-bottom"
+            x1="100" y1="182" x2="100" y2="166"
+            stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
+          />
+
+          {/* Left line: from (18, 100) to (34, 100) */}
+          <line
+            className="sniper-line-left"
+            x1="18" y1="100" x2="34" y2="100"
+            stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round"
+          />
+        </svg>
+
+        {/* Brand text */}
+        <div className="flex items-center gap-3">
+          <span className="font-display text-4xl tracking-widest uppercase text-white">
+            Sniper <span style={{ color: '#e11d48' }}>Off Road</span>
+          </span>
         </div>
       </div>
     </motion.div>
